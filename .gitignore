@@ -1,0 +1,5 @@
+# PyCharm
+.idea/
+
+# Pytest
+2018/*/__pycache__/
