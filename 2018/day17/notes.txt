@@ -1,0 +1,7 @@
+1. Follow water down, find first point of contact
+
+2. Detect a container
+    a. detect walls (if any)
+    b. detect obstacles on the surface or in the container
+    c. calculate area on the surface/in the container
+    d. determine spill side(s)

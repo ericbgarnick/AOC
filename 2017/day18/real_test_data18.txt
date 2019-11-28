@@ -1,0 +1,6 @@
+snd p
+rcv a
+mul p 2
+jgz p -3
+rcv b
+rcv c
