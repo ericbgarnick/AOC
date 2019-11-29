@@ -88,3 +88,13 @@ class TestExplorer(TestCase):
         directions = '^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$'
         expected_distance = 18
         self.max_distance_check(directions, expected_distance)
+
+    def test_find_max_distance_nesting_dead_ends(self):
+        directions = '^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$'
+        expected_distance = 23
+        self.max_distance_check(directions, expected_distance)
+
+    def test_find_max_distance_long_nesting(self):
+        directions = '^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$'
+        expected_distance = 31
+        self.max_distance_check(directions, expected_distance)

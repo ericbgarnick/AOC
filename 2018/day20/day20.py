@@ -13,10 +13,11 @@ BOOKENDS = ''.join([START, END])
 SYMBOLS = ''.join([GROUPING, BOOKENDS])
 
 
-######################
-# ----- PART I ----- #
-######################
+###########################
+# ----- COUNT STEPS ----- #
+###########################
 # Recursively find the longest segment in the input
+# NOTE: Not good for part 2
 def find_longest_route(regex_route: str) -> str:
     regex_route = regex_route.strip(SYMBOLS)
     regex_route = drop_dead_ends(regex_route)
@@ -70,9 +71,9 @@ def longest_string(*paths: str) -> str:
     return sorted(paths, key=lambda s: len(s))[-1]
 
 
-#######################
-# ----- PART II ----- #
-#######################
+############################
+# ----- FOLLOW PATHS ----- #
+############################
 # Follow all paths and record distances of each room from start
 Position = namedtuple("Position", 'row col')
 
@@ -92,28 +93,54 @@ class Explorer:
 
     def explore_cave(self, directions: str):
         """Clean off BOOKENDS and explore cave by following directions"""
-        self._explore(directions.strip(BOOKENDS))
+        self._explore_path(directions.strip(BOOKENDS))
 
-    def _explore(self, directions: str):
+    def _explore_path(self, directions: str):
         """Follow all paths in directions"""
         start = self._cur_pos
         if SPLIT not in directions:
-            self._follow_path(directions)
+            self._follow(directions)
         else:
-            if OPEN in directions:
-                open_idx = directions.find(OPEN)
-                prefix = directions[:open_idx]
-                directions = directions[open_idx:]
-                self._follow_path(prefix)
-            for path in self._find_sections(directions):
-                self._explore(path)
+            for section in self._find_sections(directions):
+                self._explore_section(section)
         self._cur_pos = start
+
+    def _explore_section(self, section: str):
+        if SPLIT not in section:
+            self._follow(section)
+        else:
+            for path in self._find_paths(section):
+                self._explore_path(path)
 
     @staticmethod
     def _find_sections(directions: str) -> List[str]:
-        directions = directions.strip(SYMBOLS)
+        """Find sections to follow in sequence"""
         sections = []
         section_start = 0
+        parens_count = 0
+        for i, d in enumerate(directions):
+            if d == OPEN:
+                letter_end = directions[i - 1] not in SYMBOLS
+                if not parens_count and i and letter_end:
+                    # Add section of letters
+                    sections.append(directions[section_start:i])
+                    section_start = i
+                parens_count += 1
+            elif d == CLOSE:
+                parens_count -= 1
+                if not parens_count:
+                    sections.append(directions[section_start:i + 1])
+                    section_start = i + 1
+        if section_start + 1 < len(directions):
+            sections.append(directions[section_start:])
+        return sections
+
+    @staticmethod
+    def _find_paths(directions: str) -> List[str]:
+        """Find alternate paths to follow in parallel"""
+        directions = directions.strip(SYMBOLS)
+        paths = []
+        path_start = 0
         parens_count = 0
         for i, d in enumerate(directions):
             if d == OPEN:
@@ -121,16 +148,19 @@ class Explorer:
             elif d == CLOSE:
                 parens_count -= 1
             elif not parens_count and d == SPLIT:
-                sections.append(directions[section_start:i])
-                section_start = i + 1
+                paths.append(directions[path_start:i])
+                path_start = i + 1
             else:
                 # Direction symbol
                 pass
-        if directions[section_start] not in SYMBOLS:
-            sections.append(directions[section_start:])
-        return sections
+        directions_remain = path_start + 1 < len(directions)
+        if directions_remain:
+            letter_path = directions[path_start] not in SYMBOLS
+            if letter_path:
+                paths.append(directions[path_start:])
+        return paths
 
-    def _follow_path(self, path: str):
+    def _follow(self, path: str):
         """Make a move for each step in path"""
         for step in path:
             self.move(step)
@@ -153,14 +183,8 @@ class Explorer:
 
 
 if __name__ == '__main__':
-    # part 1: find the length of the longest path
-    # data_file = sys.argv[1]
-    # data = open(data_file, 'r').readline().strip()
-    # longer = find_longest_route(data)
-    # print(longer)
-    # print(len(longer))
-
-    # part 2: how many paths with len >= 1000?
+    data_file = sys.argv[1]
+    data = open(data_file, 'r').read().strip()
     e = Explorer()
-    e.explore_cave('(NESEW|EEESEN|ENSWW)')
-    print(e.journal)
+    e.explore_cave(data)
+    print(e.max_distance)
