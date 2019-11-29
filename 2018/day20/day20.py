@@ -91,12 +91,18 @@ class Explorer:
     def max_distance(self) -> int:
         return max(self._journal.values())
 
+    def rooms_for_dist(self, distance: int) -> int:
+        """Return the number of rooms that are at least
+        distance number of spaces away from (0, 0)"""
+        return len([pos for pos, dist in self._journal.items()
+                    if dist >= distance])
+
     def explore_cave(self, directions: str):
         """Clean off BOOKENDS and explore cave by following directions"""
         self._explore_path(directions.strip(BOOKENDS))
 
     def _explore_path(self, directions: str):
-        """Follow all paths in directions"""
+        """Follow a branch, resetting self._cur_pos afterwards"""
         start = self._cur_pos
         if SPLIT not in directions:
             self._follow(directions)
@@ -106,6 +112,7 @@ class Explorer:
         self._cur_pos = start
 
     def _explore_section(self, section: str):
+        """Follow a section, maintaining self._cur_pos afterwards"""
         if SPLIT not in section:
             self._follow(section)
         else:
@@ -131,7 +138,7 @@ class Explorer:
                 if not parens_count:
                     sections.append(directions[section_start:i + 1])
                     section_start = i + 1
-        if section_start + 1 < len(directions):
+        if section_start < len(directions):
             sections.append(directions[section_start:])
         return sections
 
@@ -153,7 +160,7 @@ class Explorer:
             else:
                 # Direction symbol
                 pass
-        directions_remain = path_start + 1 < len(directions)
+        directions_remain = path_start < len(directions)
         if directions_remain:
             letter_path = directions[path_start] not in SYMBOLS
             if letter_path:
@@ -163,9 +170,9 @@ class Explorer:
     def _follow(self, path: str):
         """Make a move for each step in path"""
         for step in path:
-            self.move(step)
+            self._move(step)
 
-    def move(self, direction: str):
+    def _move(self, direction: str):
         """Update self._cur_pos for moving in the given direction.
         Also update self._journal with distance for new position."""
         cur_dist = self._journal[self._cur_pos]
@@ -187,4 +194,8 @@ if __name__ == '__main__':
     data = open(data_file, 'r').read().strip()
     e = Explorer()
     e.explore_cave(data)
-    print(e.max_distance)
+    print(f"Farthest room is {e.max_distance} units away from start")
+    if len(sys.argv) > 2:
+        target_distance = int(sys.argv[2])
+        print(f"There are {e.rooms_for_dist(target_distance)} rooms "
+              f"at least {target_distance} units away from start")
