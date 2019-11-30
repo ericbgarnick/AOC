@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from aoc_types import Point
 
@@ -18,6 +18,7 @@ class StreamPath:
         self._x = x_coord
         self._y = y_coord
         self._source = (x_coord, y_coord)
+        self._parent = None  # type: Optional[StreamPath]
 
     @property
     def direction(self) -> Direction:
@@ -34,6 +35,10 @@ class StreamPath:
     @property
     def source(self) -> Point:
         return self._source
+
+    @property
+    def parent(self) -> 'StreamPath':
+        return self._parent
 
     @property
     def below(self) -> Point:
@@ -58,6 +63,9 @@ class StreamPath:
 
     def set_sibling(self, sibling: 'StreamPath'):
         self._sibling = sibling
+
+    def add_parent(self, parent_path: 'StreamPath'):
+        self._parent = parent_path
 
     def drop_sibling(self):
         self._sibling = None

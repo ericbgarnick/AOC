@@ -71,5 +71,5 @@ if __name__ == '__main__':
     data = [line.strip() for line in open(data_file, "r").readlines()]
     cm = ClayMap(data)
 
-    with open("clay_map1.out", "w") as f_out:
+    with open(f"{data_file}.out", "w") as f_out:
         f_out.write(str(cm))
