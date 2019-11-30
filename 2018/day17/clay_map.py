@@ -1,8 +1,8 @@
 import re
 import sys
-from typing import List, Set, Tuple
+from typing import List, Set
 
-Point = Tuple[int, int]
+from aoc_types import Point
 
 
 class ClayMap:

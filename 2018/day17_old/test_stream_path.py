@@ -1,5 +1,5 @@
 from clay_map import ClayMap
-from stream_path import StreamPath, Direction, RowEndType
+from stream_path_old import StreamPath, Direction, RowEndType
 
 
 class TestStreamPath:

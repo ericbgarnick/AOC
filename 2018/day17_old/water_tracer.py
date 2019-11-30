@@ -1,7 +1,7 @@
 from typing import List, Set, Optional, Dict
 
 from clay_map import Point, ClayMap
-from stream_path import StreamPath, Direction
+from stream_path_old import StreamPath, Direction
 
 
 class WaterTracer:
