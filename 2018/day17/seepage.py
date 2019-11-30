@@ -1,4 +1,4 @@
-from typing import Set, List
+from typing import Set, List, Callable
 
 from aoc_types import Point
 from clay_map import ClayMap
@@ -32,10 +32,20 @@ class Seepage:
             elif self._path_open(path.below):
                 path.descend()
                 self._record_position(path.position)
-            elif path.is_falling and path.below not in self._water_map:
-                # Falling but clay is below
-                dead_paths.append(path)
-                self._spawn_streams(path, new_paths)
+            elif path.is_falling:
+                if path.below in self._water_map:
+                    # Fell into existing water
+                    if self._in_container(path):
+                        # More space to fill in container
+                        dead_paths.append(path)
+                        self._spawn_streams(path, new_paths)
+                    else:
+                        # existing water is at the top of a container
+                        self._kill_stream(path, dead_paths)
+                else:
+                    # Fell onto clay
+                    dead_paths.append(path)
+                    self._spawn_streams(path, new_paths)
             elif self._path_open(path.next_position):
                 path.spread()
                 self._record_position(path.position)
@@ -111,3 +121,31 @@ class Seepage:
         except AttributeError:
             # No parent
             return False
+
+    def _in_container(self, path: StreamPath) -> bool:
+        cur_x, cur_y = path.position
+        left_x = right_x = cur_x
+
+        # check left
+        left_x = self._check_sideways(left_x, cur_y, int.__sub__)
+
+        # check right
+        right_x = self._check_sideways(right_x, cur_y, int.__add__)
+
+        # Both sides enclosed
+        return (not self._path_open((left_x, cur_y)) and
+                not self._path_open((right_x, cur_y)))
+
+    def _check_sideways(self, pos_x: int, cur_y: int, op: Callable) -> int:
+        while (not self._path_open((pos_x, cur_y + 1))
+               and self._path_open((op(pos_x, 1), cur_y))):
+            pos_x = op(pos_x, 1)
+        return pos_x
+
+    def __str__(self):
+        map_grid = self._clay_map.map_grid
+        for col, row in self._water_map:
+            map_grid[row][col] = '|'
+        return "\n".join("".join(row) for row in map_grid)
+
+    __repr__ = __str__

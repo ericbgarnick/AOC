@@ -8,5 +8,9 @@ if __name__ == '__main__':
     data = [line.strip() for line in open(data_file, "r").readlines()]
     cm = ClayMap(data)
     seepage = Seepage(cm)
-    seepage.run()
-    print(f"Water seeps to {seepage.water_volume} spaces")
+    try:
+        seepage.run()
+        print(f"Water seeps to {seepage.water_volume} spaces")
+    except AssertionError:
+        pass
+    open('output.out', 'w').write(str(seepage))
