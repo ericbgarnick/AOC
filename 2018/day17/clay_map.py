@@ -1,4 +1,5 @@
 import re
+import sys
 from typing import List, Set, Tuple
 
 Point = Tuple[int, int]
@@ -63,3 +64,12 @@ class ClayMap:
         return "\n".join("".join(row) for row in self.map_grid)
 
     __repr__ = __str__
+
+
+if __name__ == '__main__':
+    data_file = sys.argv[1]
+    data = [line.strip() for line in open(data_file, "r").readlines()]
+    cm = ClayMap(data)
+
+    with open("clay_map1.out", "w") as f_out:
+        f_out.write(str(cm))
