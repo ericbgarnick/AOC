@@ -5,14 +5,14 @@ from typing import List
 TOTAL = 0
 
 
-def day01_part1(puzzle_data: List[int]):
+def day01_part1(puzzle_data: List[int]) -> int:
     res = 0
     for mass in puzzle_data:
         res += calc_fuel(mass)
     return res
 
 
-def day01_part2(puzzle_data: List[int]):
+def day01_part2(puzzle_data: List[int]) -> int:
     global TOTAL
     for mass in puzzle_data:
         res = mass
@@ -24,7 +24,7 @@ def day01_part2(puzzle_data: List[int]):
     return TOTAL
 
 
-def calc_fuel(mass: int):
+def calc_fuel(mass: int) -> int:
     return int(mass / 3) - 2
 
 
