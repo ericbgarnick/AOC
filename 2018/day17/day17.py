@@ -11,6 +11,8 @@ if __name__ == '__main__':
     try:
         seepage.run()
         print(f"Water seeps to {seepage.water_volume} spaces")
+        # print(f"Standing water fills {seepage.standing_water_volume} spaces")
+        seepage.print_metrics()
     except AssertionError:
         pass
     open('output.out', 'w').write(str(seepage))
