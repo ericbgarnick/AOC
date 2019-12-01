@@ -20,17 +20,16 @@ class Seepage:
 
     def run(self):
         num_ticks = 0
-        max_paths = len(self._paths)
-        start = time.time()
-        while self._paths and num_ticks < 20000:
+        origin = start = time.time()
+        while self._paths and num_ticks < 10000:
             # print(f"Tick {num_ticks}: {self._paths}")
             self._tick()
             num_ticks += 1
-            max_paths = max(len(self._paths), max_paths)
             if num_ticks % 500 == 0:
                 tick_at = time.time()
                 print(f"{num_ticks} TICKS IN {tick_at - start} SECONDS")
                 start = tick_at
+        print(f"TOTAL TIME: {time.time() - origin}")
 
     def _tick(self):
         """Advance each path if possible"""
@@ -87,8 +86,8 @@ class Seepage:
         return position[1] <= self._clay_map.lowest_point
 
     def _record_position(self, position: Point, falling: bool = False):
-        down_to_top_clay = position[1] >= self._clay_map.highest_point
-        if self._in_bounds(position) and down_to_top_clay:
+        reached_top_clay = position[1] >= self._clay_map.highest_point
+        if self._in_bounds(position) and reached_top_clay:
             self._water_map.add(position)
             if falling:
                 self._falling_water.add(position)
