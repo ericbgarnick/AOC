@@ -7,24 +7,35 @@ GOAL = 19690720
 
 
 def day02_part1(puzzle_data: List[int]) -> int:
-    copied = [v for v in puzzle_data]
-    restore_alarm_state(copied, 12, 2)
-    return run(copied)[0]
+    computer = IntcodeComputerV1(puzzle_data)
+    computer.restore_alarm_state(12, 2)
+    return computer.run()[0]
 
 
 def day02_part2(puzzle_data: List[int]) -> int:
-    copied = [v for v in puzzle_data]
+    computer = IntcodeComputerV1(puzzle_data)
     for noun in range(100):
         for verb in range(100):
-            restore_alarm_state(copied, noun, verb)
-            if run(copied)[0] == GOAL:
+            computer.restore_alarm_state(noun, verb)
+            if computer.run()[0] == GOAL:
                 return 100 * noun + verb
 
 
-def run(original: List[int]) -> List[int]:
-    program = [v for v in original]
-    next_code_idx = 0
-    while program[next_code_idx] != HALT:
+class IntcodeComputerV1:
+    def __init__(self, original_program: List[int]):
+        self._original_program = [v for v in original_program]
+
+    def run(self) -> List[int]:
+        program = [v for v in self._original_program]
+        next_code_idx = 0
+        while program[next_code_idx] != HALT:
+            self._execute_op_code(program, next_code_idx)
+            next_code_idx += 4
+
+        return program
+
+    @staticmethod
+    def _execute_op_code(program: List[int], next_code_idx: int):
         op_code = program[next_code_idx]
         input1, input2 = program[next_code_idx + 1: next_code_idx + 3]
         output = program[next_code_idx + 3]
@@ -36,14 +47,9 @@ def run(original: List[int]) -> List[int]:
         else:
             raise ValueError(f"Unknown op code {op_code}")
 
-        next_code_idx += 4
-
-    return program
-
-
-def restore_alarm_state(program_data: List[int], noun: int, verb: int):
-    program_data[1] = noun
-    program_data[2] = verb
+    def restore_alarm_state(self, noun: int, verb: int):
+        self._original_program[1] = noun
+        self._original_program[2] = verb
 
 
 if __name__ == '__main__':
