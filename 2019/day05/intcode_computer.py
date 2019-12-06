@@ -1,4 +1,3 @@
-import sys
 from typing import List
 
 
@@ -34,26 +33,3 @@ class IntcodeComputerV1:
     def restore_alarm_state(self, noun: int, verb: int):
         self._original_program[1] = noun
         self._original_program[2] = verb
-
-
-def day02_part1(puzzle_data: List[int]) -> int:
-    computer = IntcodeComputerV1(puzzle_data)
-    computer.restore_alarm_state(12, 2)
-    return computer.run()[0]
-
-
-def day02_part2(puzzle_data: List[int]) -> int:
-    goal = 19690720
-    computer = IntcodeComputerV1(puzzle_data)
-    for noun in range(100):
-        for verb in range(100):
-            computer.restore_alarm_state(noun, verb)
-            if computer.run()[0] == goal:
-                return 100 * noun + verb
-
-
-if __name__ == '__main__':
-    data_file = sys.argv[1]
-    data = [int(x) for x in open(data_file).read().strip().split(',')]
-    print(f"PART 1: {day02_part1(data)}")
-    print(f"PART 2: {day02_part2(data)}")
