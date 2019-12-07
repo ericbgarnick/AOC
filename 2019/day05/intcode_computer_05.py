@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Tuple
+
+Instruction = Tuple[int, int, int, int]
 
 
 class IntcodeComputerV1:
@@ -33,3 +35,79 @@ class IntcodeComputerV1:
     def restore_alarm_state(self, noun: int, verb: int):
         self._original_program[1] = noun
         self._original_program[2] = verb
+
+
+class IntcodeComputerV2(IntcodeComputerV1):
+    PARAMETERIZED_PROCESSES = [3, 4]
+    POSITION_MODE = 0
+    IMMEDIATE_MODE = 1
+
+    @staticmethod
+    def _execute_op_code(program: List[int], next_code_idx: List[int]):
+        idx_val = next_code_idx[0]
+        instruction_code = program[idx_val]
+        op_code, mode1, mode2, mode3 = IntcodeComputerV2._interpret_instruction(instruction_code)
+
+        if op_code in IntcodeComputerV2.PARAMETERIZED_PROCESSES:
+            if op_code == 3:
+                tgt_idx = program[idx_val + 1]
+                param = int(input("Please enter your input value: "))
+                program[tgt_idx] = param
+            else:
+                # op_code == 4
+                tgt_idx = IntcodeComputerV2._input_for_mode(mode1, 1, idx_val, program)
+                print(tgt_idx)
+
+            next_code_idx[0] += 2
+
+        else:
+            input1 = IntcodeComputerV2._input_for_mode(mode1, 1, idx_val, program)
+            input2 = IntcodeComputerV2._input_for_mode(mode2, 2, idx_val, program)
+            output = program[idx_val + 3]
+
+            if op_code == 1:
+                program[output] = input1 + input2
+                next_code_idx[0] += 4
+            elif op_code == 2:
+                program[output] = input1 * input2
+                next_code_idx[0] += 4
+            elif op_code == 5:
+                if input1:
+                    next_code_idx[0] = input2
+                else:
+                    next_code_idx[0] += 3
+            elif op_code == 6:
+                if not input1:
+                    next_code_idx[0] = input2
+                else:
+                    next_code_idx[0] += 3
+            elif op_code == 7:
+                if input1 < input2:
+                    program[output] = 1
+                else:
+                    program[output] = 0
+                next_code_idx[0] += 4
+            elif op_code == 8:
+                if input1 == input2:
+                    program[output] = 1
+                else:
+                    program[output] = 0
+                next_code_idx[0] += 4
+
+    @staticmethod
+    def _input_for_mode(mode: int, mode_pos: int, program_idx: int,
+                        program: List[int]) -> int:
+        if mode == IntcodeComputerV2.POSITION_MODE:
+            input_idx = program[program_idx + mode_pos]
+            input_val = program[input_idx]
+        else:
+            input_val = program[program_idx + mode_pos]
+        return input_val
+
+    @staticmethod
+    def _interpret_instruction(instruction_code: int) -> Instruction:
+        op_code = instruction_code % 100
+        mode1 = instruction_code // 100 % 10
+        mode2 = instruction_code // 1000 % 10
+        mode3 = instruction_code // 10000 % 10
+        return op_code, mode1, mode2, mode3
