@@ -1,7 +1,7 @@
 import sys
 from typing import List, Tuple
 
-from intcode_computer import IntcodeComputerV1
+from intcode_computer_05 import IntcodeComputerV1
 
 Instruction = Tuple[int, int, int, int]
 
