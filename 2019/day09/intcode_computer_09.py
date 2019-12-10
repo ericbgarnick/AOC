@@ -56,7 +56,6 @@ class IntcodeComputerV4:
         else:
             input1 = self._input_for_mode(mode1, 1)
             input2 = self._input_for_mode(mode2, 2)
-            # output = self._input_for_mode(mode3, 3)
             output = self._access_memory(MemoryOperation.READ,
                                          self._next_code_idx + 3)
             if mode3 == self.RELATIVE_MODE:
