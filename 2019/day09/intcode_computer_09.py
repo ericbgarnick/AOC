@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Callable
 
 Instruction = Tuple[int, int, int, int]
 
@@ -40,53 +40,34 @@ class IntcodeComputerV4:
 
         if op_code in self.PARAMETERIZED_PROCESSES:
             if op_code == 3:
-                tgt_idx = self._access_memory(MemoryOperation.READ,
-                                              self._next_code_idx + 1)
-                if mode1 == self.RELATIVE_MODE:
-                    tgt_idx += self._relative_base
+                output = self._output_for_mode(mode1, 1)
                 param = int(input("Please enter your input value: "))
-                self._access_memory(MemoryOperation.WRITE, tgt_idx, param)
-            else:
-                # op_code == 4
+                self._access_memory(MemoryOperation.WRITE, output, param)
+            elif op_code == 4:
                 tgt_idx = self._input_for_mode(mode1, 1)
                 print(tgt_idx)
+            else:
+                raise ValueError(f"Invalid op code {op_code}")
 
             self._next_code_idx += 2
 
         else:
             input1 = self._input_for_mode(mode1, 1)
             input2 = self._input_for_mode(mode2, 2)
-            output = self._access_memory(MemoryOperation.READ,
-                                         self._next_code_idx + 3)
-            if mode3 == self.RELATIVE_MODE:
-                output += self._relative_base
+            output = self._output_for_mode(mode3, 3)
 
             if op_code == 1:
-                self._access_memory(MemoryOperation.WRITE, output,
-                                    input1 + input2)
-                self._next_code_idx += 4
+                self._combine_op(input1, input2, output, int.__add__)
             elif op_code == 2:
-                self._access_memory(MemoryOperation.WRITE, output,
-                                    input1 * input2)
-                self._next_code_idx += 4
+                self._combine_op(input1, input2, output, int.__mul__)
             elif op_code == 5:
-                if input1:
-                    self._next_code_idx = input2
-                else:
-                    self._next_code_idx += 3
+                self._zero_val(input1, input2, int.__ne__)
             elif op_code == 6:
-                if not input1:
-                    self._next_code_idx = input2
-                else:
-                    self._next_code_idx += 3
+                self._zero_val(input1, input2, int.__eq__)
             elif op_code == 7:
-                val = int(input1 < input2)
-                self._access_memory(MemoryOperation.WRITE, output, val)
-                self._next_code_idx += 4
+                self._compare_op(input1, input2, output, int.__lt__)
             elif op_code == 8:
-                val = int(input1 == input2)
-                self._access_memory(MemoryOperation.WRITE, output, val)
-                self._next_code_idx += 4
+                self._compare_op(input1, input2, output, int.__eq__)
             elif op_code == 9:
                 self._relative_base += input1
                 self._next_code_idx += 2
@@ -106,6 +87,13 @@ class IntcodeComputerV4:
             input_idx = self._relative_base + offset
             input_val = self._access_memory(MemoryOperation.READ, input_idx)
         return input_val
+
+    def _output_for_mode(self, mode: int, mode_pos: int) -> int:
+        output = self._access_memory(MemoryOperation.READ,
+                                     self._next_code_idx + mode_pos)
+        if mode == self.RELATIVE_MODE:
+            output += self._relative_base
+        return output
 
     @staticmethod
     def _interpret_instruction(instruction_code: int) -> Instruction:
@@ -129,3 +117,21 @@ class IntcodeComputerV4:
 
     def _extend_memory(self, address: int):
         self._program += [0 for _ in range(address + 1 - len(self._program))]
+
+    def _combine_op(self, input1: int, input2: int, output: int,
+                    operation: Callable):
+        self._access_memory(MemoryOperation.WRITE, output,
+                            operation(input1, input2))
+        self._next_code_idx += 4
+
+    def _zero_val(self, input1: int, input2: int, operation: Callable):
+        if operation(input1, 0):
+            self._next_code_idx = input2
+        else:
+            self._next_code_idx += 3
+
+    def _compare_op(self, input1: int, input2: int, output: int,
+                    operation: Callable):
+        val = int(operation(input1, input2))
+        self._access_memory(MemoryOperation.WRITE, output, val)
+        self._next_code_idx += 4
