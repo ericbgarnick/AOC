@@ -72,6 +72,9 @@ class IntcodeComputerV4:
                 self._relative_base += input1
                 self._next_code_idx += 2
 
+    ###########################
+    # - Instruction Parsing - #
+    ###########################
     def _input_for_mode(self, mode: int, mode_pos: int) -> int:
         if mode == self.POSITION_MODE:
             input_idx = self._access_memory(MemoryOperation.READ,
@@ -103,6 +106,9 @@ class IntcodeComputerV4:
         mode3 = instruction_code // 10000 % 10
         return op_code, mode1, mode2, mode3
 
+    #########################
+    # - Memory Management - #
+    #########################
     def _access_memory(self, operation: MemoryOperation, address: int,
                        value: int = None,):
         if len(self._program) <= address:
@@ -118,6 +124,9 @@ class IntcodeComputerV4:
     def _extend_memory(self, address: int):
         self._program += [0 for _ in range(address + 1 - len(self._program))]
 
+    #########################
+    # - Operation Helpers - #
+    #########################
     def _combine_op(self, input1: int, input2: int, output: int,
                     operation: Callable):
         self._access_memory(MemoryOperation.WRITE, output,
