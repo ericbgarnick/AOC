@@ -1,4 +1,5 @@
 import pickle
+import sys
 from enum import Enum
 from queue import Queue
 from typing import List, Tuple, Callable, Dict, Optional
@@ -78,11 +79,33 @@ class ArcadeCabinet:
         if load_input.upper() == self.YES:
             self._load_input()
 
+        fd, oldterm = self._set_noncanonical_term()
         self._computer.run()
+        self._reset_term(fd, oldterm)
 
         save_history = input(f"Save command history? ({self.YES}/{self.NO}) ")
         if save_history.upper() == self.YES:
             self._dump_history()
+
+    @staticmethod
+    def _set_noncanonical_term() -> Tuple:
+        import sys
+        import termios
+
+        fd = sys.stdin.fileno()
+        newattr = termios.tcgetattr(fd)
+        newattr[3] = newattr[3] & ~termios.ICANON
+        newattr[3] = newattr[3] & ~termios.ECHO
+        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+        oldterm = termios.tcgetattr(fd)
+
+        return fd, oldterm
+
+    @staticmethod
+    def _reset_term(fd, oldterm):
+        import termios
+        termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
 
     def tile_type_count(self, tile_type: int) -> int:
         return len([p for p, t in self._screen_contents.items()
@@ -93,7 +116,8 @@ class ArcadeCabinet:
         if not self._input_buffer.empty():
             next_cmd = self._input_buffer.get()
         else:
-            next_cmd = input("Move <-a/-s/->d: ")
+            print("Move <-a/-s/->d: ")
+            next_cmd = sys.stdin.read(1)
         next_cmd = next_cmd[0] if next_cmd else next_cmd
         self._command_history.append(next_cmd)
         return self.COMMAND_CODES[next_cmd]
