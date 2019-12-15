@@ -12,4 +12,3 @@ if __name__ == '__main__':
     block_count = cabinet.tile_type_count(block_type)
 
     print(f"PART 1:\n{block_count} block-type tiles")
-

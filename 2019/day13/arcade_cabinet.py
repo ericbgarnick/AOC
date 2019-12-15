@@ -1,7 +1,7 @@
 import pickle
 from enum import Enum
 from queue import Queue
-from typing import List, Tuple, Callable, Dict, Optional, Set
+from typing import List, Tuple, Callable, Dict, Optional
 
 
 ######################
@@ -27,6 +27,8 @@ class ArcadeCabinet:
         OutputType.Y_POS.value: OutputType.TILE_ID.value,
         OutputType.TILE_ID.value: OutputType.X_POS.value
     }
+    TEST_MODE = 1
+    PLAY_MODE = 2
 
     # Game-board display
     EMPTY = 0
@@ -59,12 +61,25 @@ class ArcadeCabinet:
         self._command_history = []
 
     def run(self, program: List[int]):
+        mode = int(input(f"Enter {self.TEST_MODE} for TEST MODE, "
+                         f"ENTER {self.PLAY_MODE} for PLAY MODE: "))
+        program[0] = mode
+        self._computer = IntcodeComputerV5(program, self)
+        if mode == self.TEST_MODE:
+            self._run_test_mode()
+        else:
+            self._run_play_mode()
+
+    def _run_test_mode(self):
+        self._computer.run()
+
+    def _run_play_mode(self):
         load_input = input(f"Load saved command input? ({self.YES}/{self.NO}) ")
         if load_input.upper() == self.YES:
             self._load_input()
-            print("Loaded command input")
-        self._computer = IntcodeComputerV5(program, self)
+
         self._computer.run()
+
         save_history = input(f"Save command history? ({self.YES}/{self.NO}) ")
         if save_history.upper() == self.YES:
             self._dump_history()
@@ -272,4 +287,3 @@ class IntcodeComputerV5:
         val = int(operation(input1, input2))
         self._access_memory(MemoryOperation.WRITE, output, val)
         self._next_code_idx += 4
-
