@@ -91,15 +91,18 @@ class Nanofactory:
                 self._extra[r] = have
 
 
-def fuel_available(ore_per_fuel: int) -> int:
-    """Make a guess at available as ore collected divided by fuel cost per ore,
-    then alternatively increase and decrease the guess by decreasing amounts
-    until the largest value below ORE_COLLECTED is found"""
-    available = ORE_COLLECTED // ore_per_fuel
-    factory = Nanofactory(data, available)
+def fuel_available() -> int:
+    """Make a guess as the square root of ORE_COLLECTED, then alternatively
+    increase and decrease the guess by decreasing amounts until the largest
+    value below ORE_COLLECTED is found."""
+    guess = int(ORE_COLLECTED ** .5)
+    factory = Nanofactory(data, guess)
     needed = factory.fuel_cost()
+
     increase = 0
     factor = 100000
+    reduction = 10
+
     operation_name = 'add'
     comparison_name = 'lt'
     comparison = COMPARISONS[comparison_name]
@@ -108,15 +111,18 @@ def fuel_available(ore_per_fuel: int) -> int:
     while factor:
         while comparison(needed, ORE_COLLECTED):
             increase = operation(increase, factor)
-            factory = Nanofactory(data, int(available + increase))
+            factory = Nanofactory(data, int(guess + increase))
             needed = factory.fuel_cost()
-        factor = factor // 10
+
+        factor = factor // reduction
+
         comparison_name = COMPARISON_LOOP[comparison_name]
         comparison = COMPARISONS[comparison_name]
+
         operation_name = OPERATION_LOOP[operation_name]
         operation = OPERATIONS[operation_name]
 
-    return available + increase
+    return guess + increase
 
 
 if __name__ == '__main__':
@@ -127,4 +133,4 @@ if __name__ == '__main__':
     ore_needed = nanofactory.fuel_cost()
 
     print(f"PART 1:\nNeed {ore_needed} ORE")
-    print(f"PART 2:\nCan create {fuel_available(ore_needed)} FUEL")
+    print(f"PART 2:\nCan create {fuel_available()} FUEL")
