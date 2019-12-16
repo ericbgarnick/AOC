@@ -16,6 +16,7 @@ class RepairDroid:
     EAST = 4
     COMMAND_CODES = {'w': NORTH, 's': SOUTH, 'a': WEST, 'd': EAST}
     SYMBOL_FOR_DIR = {NORTH: '^', SOUTH: 'v', WEST: '<', EAST: '>'}
+    OPP_DIR = {NORTH: SOUTH, SOUTH: NORTH, EAST: WEST, WEST: EAST}
 
     UNKNOWN = " "
     WALL = 0
@@ -26,6 +27,8 @@ class RepairDroid:
     def __init__(self):
         self._computer = None  # type: Optional[IntcodeComputerV5]
         self._cur_position = (0, 0)
+        self._ox_sys_pos = None
+        self._move_history = []
         self._known_positions = {}  # type: Dict[Point, str]
         self._cur_direction = RepairDroid.NORTH
         self._min_x = 0
@@ -35,7 +38,10 @@ class RepairDroid:
 
     @property
     def symbol(self) -> str:
-        return RepairDroid.SYMBOL_FOR_DIR[self._cur_direction]
+        if self._cur_position == self._ox_sys_pos:
+            return "x"
+        else:
+            return RepairDroid.SYMBOL_FOR_DIR[self._cur_direction]
 
     def run(self, program: List[int]):
         self._computer = IntcodeComputerV5(program, self)
@@ -82,6 +88,9 @@ class RepairDroid:
             self._move()
         elif output_val == RepairDroid.OXYGEN:
             self._record_terrain(terrain_type)
+            self._move()
+            self._ox_sys_pos = self._cur_position
+            print(f"OXYGEN SYSTEM IS {len(self._move_history)} STEPS FROM START")
         else:
             raise ValueError(f"Invalid output: {output_val}")
 
@@ -124,7 +133,27 @@ class RepairDroid:
 
     def _move(self):
         self._cur_position = self._get_next_space()
+        self._update_move_history()
         self._update_min_max(self._cur_position)
+
+    def _update_move_history(self):
+        try:
+            last_move = self._move_history[-1]
+        except IndexError:
+            last_move = None
+        if last_move:
+            last_move_dir = last_move[1]
+            if self._cur_direction == RepairDroid.OPP_DIR[last_move_dir]:
+                # backtracking
+                self._move_history.pop(-1)
+            else:
+                self._record_move()
+        else:
+            self._record_move()
+
+    def _record_move(self):
+        new_move = (self._cur_position, self._cur_direction)
+        self._move_history.append(new_move)
 
     def _update_min_max(self, pos: Point):
         cur_x, cur_y = pos
