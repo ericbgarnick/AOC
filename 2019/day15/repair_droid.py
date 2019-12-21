@@ -1,7 +1,7 @@
 import sys
 from enum import Enum
-from typing import List, Tuple, Callable, Dict, Optional
-
+from queue import Queue
+from typing import List, Tuple, Callable, Dict, Optional, Set
 
 Point = Tuple[int, int]
 
@@ -14,6 +14,7 @@ class RepairDroid:
     SOUTH = 2
     WEST = 3
     EAST = 4
+    DISTANCE_SEARCH_COMMAND = '0'
     COMMAND_CODES = {'w': NORTH, 's': SOUTH, 'a': WEST, 'd': EAST}
     SYMBOL_FOR_DIR = {NORTH: '^', SOUTH: 'v', WEST: '<', EAST: '>'}
     OPP_DIR = {NORTH: SOUTH, SOUTH: NORTH, EAST: WEST, WEST: EAST}
@@ -30,6 +31,7 @@ class RepairDroid:
         self._ox_sys_pos = None
         self._move_history = []
         self._known_positions = {}  # type: Dict[Point, str]
+        self._path_positions = set()  # type: Set[Point]
         self._cur_direction = RepairDroid.NORTH
         self._min_x = 0
         self._max_x = 0
@@ -74,8 +76,14 @@ class RepairDroid:
 
     def get_input(self) -> int:
         self.display()
-        next_cmd = sys.stdin.read(1)
-        next_cmd = next_cmd[0] if next_cmd else next_cmd
+        next_cmd = None
+        while next_cmd not in self.COMMAND_CODES.keys():
+            # Keep taking input until a valid move command is received
+            next_cmd = sys.stdin.read(1).lower()
+            next_cmd = next_cmd[0] if next_cmd else next_cmd
+            if next_cmd == self.DISTANCE_SEARCH_COMMAND:
+                print("MAX DISTANCE FROM OXYGEN SYSTEM:",
+                      self._distance_search())
         self._cur_direction = RepairDroid.COMMAND_CODES[next_cmd]
         return self._cur_direction
 
@@ -125,11 +133,17 @@ class RepairDroid:
     ############################
     def _record_terrain(self, terrain_type: str, next_space: bool = True):
         if next_space:
+            # Record the next space as wall or oxygen
             space = self._get_next_space()
             self._update_min_max(space)
         else:
+            # Record the current space as floor
             space = self._cur_position
         self._known_positions[space] = terrain_type
+
+        if terrain_type != self.TERRAIN_TYPES[self.WALL]:
+            # Record for distance search
+            self._path_positions.add(space)
 
     def _move(self):
         self._cur_position = self._get_next_space()
@@ -156,6 +170,7 @@ class RepairDroid:
         self._move_history.append(new_move)
 
     def _update_min_max(self, pos: Point):
+        """Update values for informing display edges"""
         cur_x, cur_y = pos
 
         self._max_x = max(self._max_x, cur_x)
@@ -175,6 +190,29 @@ class RepairDroid:
         else:
             next_space = cur_x + 1, cur_y
         return next_space
+
+    def _distance_search(self) -> int:
+        max_dist = 0
+        measured = {self._ox_sys_pos: 0}
+        to_measure = Queue()
+        to_measure.put(self._ox_sys_pos)
+        while not to_measure.empty():
+            cur_space = to_measure.get()
+            cur_dist = measured[cur_space]
+            max_dist = max(cur_dist, max_dist)
+            for adj in self._adjacents(cur_space):
+                if adj in self._path_positions and adj not in measured:
+                    measured[adj] = cur_dist + 1
+                    to_measure.put(adj)
+        return max_dist
+
+    @staticmethod
+    def _adjacents(space: Point) -> List[Point]:
+        n = space[0], space[1] - 1
+        s = space[0], space[1] + 1
+        w = space[0] - 1, space[1]
+        e = space[0] + 1, space[1]
+        return [n, s, w, e]
 
 
 ########################
