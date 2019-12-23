@@ -5,16 +5,29 @@ Point = Tuple[int, int]
 
 
 class AsciiSystem:
-    SCAFFOLD = 35
-    OPEN_SPACE = 46
-    NEW_LINE = 10
+    SCAFFOLD = ord('#')
+    OPEN_SPACE = ord('.')
+    NEW_LINE = ord('\n')
+
+    MAIN_MOVEMENT_ROUTINE = [ord(instr) for instr in 'A,A,B,C,C,A,C,B,C,B\n']
+
+    A = [ord(instr) for instr in 'L,4,L,4,L,6,R,10,L,6\n']
+    B = [ord(instr) for instr in 'L,12,L,6,R,10,L,6\n']
+    C = [ord(instr) for instr in 'R,8,R,10,L,6\n']
+
+    CONT_VID_FEED = [ord(instr) for instr in 'n\n']
+
+    LOGIC = MAIN_MOVEMENT_ROUTINE + A + B + C + CONT_VID_FEED
 
     def __init__(self):
         self._computer = None
         self._pixels = []
         self._image_width = 0
+        self._record_image = True
+        self._cur_instr_idx = -1
 
-    def run(self, program: List[int]):
+    def run(self, program: List[int], record_image: bool):
+        self._record_image = record_image
         self._computer = IntcodeComputerV5(program, self)
         self._computer.run()
 
@@ -78,12 +91,21 @@ class AsciiSystem:
 
     # - Intcode computer access - #
     def get_input(self) -> int:
-        pass
+        self._cur_instr_idx += 1
+        next_input = self.LOGIC[self._cur_instr_idx]
+        print(f"INPUT: {next_input} ({repr(chr(next_input))})")
+        return next_input
 
     def process_output(self, output_val: int):
-        self._pixels.append(output_val)
-        if output_val == self.NEW_LINE and not self._image_width:
-            self._image_width = len(self._pixels)
+        if self._record_image:
+            self._pixels.append(output_val)
+            if output_val == self.NEW_LINE and not self._image_width:
+                self._image_width = len(self._pixels)
+        else:
+            if output_val <= ord('z'):
+                print(chr(output_val), end='')
+            else:
+                print(f"PART 2:\n{output_val}")
 
 
 ########################
