@@ -40,7 +40,7 @@ def find_changeable_ops(instructions: List[Tuple[str, int]]) -> Dict[str, List[i
     changes = {"nop": [], "jmp": []}
     for i, instr in enumerate(instructions):
         op, arg = instr
-        if op in {"nop", "jmp"} and arg != 1:
+        if op in changes.keys() and arg != 1:
             changes[op].append(i)
     return changes
 
@@ -48,7 +48,7 @@ def find_changeable_ops(instructions: List[Tuple[str, int]]) -> Dict[str, List[i
 def try_alternatives(instructions: List[Tuple[str, int]], changes: Dict[str, List[int]]) -> int:
     """Run instructions repeatedly, exchanging one instance of 'nop' and 'jmp' for each run"""
     swap = {"nop": "jmp", "jmp": "nop"}
-    for op in ["nop", "jmp"]:
+    for op in swap.keys():
         for change in changes[op]:
             op, arg = instructions[change]
             instructions[change] = (swap[op], arg)
