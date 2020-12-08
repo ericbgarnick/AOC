@@ -45,7 +45,7 @@ if __name__ == "__main__":
     try:
         input_file = argv[1]
         map_info = parse_input(input_file)
-        print("DAY 1:", count_trees(**map_info))
-        print("DAY 2:", alternate_paths(**map_info))
+        print("PART 1:", count_trees(**map_info))
+        print("PART 2:", alternate_paths(**map_info))
     except IndexError:
         print("Enter path to data file!")

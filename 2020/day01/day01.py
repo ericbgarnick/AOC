@@ -35,7 +35,7 @@ if __name__ == "__main__":
     try:
         input_file = argv[1]
         entry_numbers = parse_input(input_file)
-        print("DAY 1:", part1(entry_numbers))
-        print("DAY 2:", part2(entry_numbers))
+        print("PART 1:", part1(entry_numbers))
+        print("PART 2:", part2(entry_numbers))
     except IndexError:
         print("Enter path to data file!")

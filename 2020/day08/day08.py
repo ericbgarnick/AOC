@@ -59,7 +59,7 @@ def try_alternatives(instructions: List[Tuple[str, int]], changes: Dict[str, Lis
 if __name__ == "__main__":
     input_file = argv[1]
     instruction_set = parse_input(input_file)
-    print("DAY 1:", run([i for i in instruction_set])[0])
+    print("PART 1:", run([i for i in instruction_set])[0])
     possible_changes = find_changeable_ops(instruction_set)
-    print("DAY 2:", try_alternatives(instruction_set, possible_changes))
+    print("PART 2:", try_alternatives(instruction_set, possible_changes))
 

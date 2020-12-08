@@ -81,7 +81,7 @@ def valid_field_values(fields: Dict[str, str]) -> bool:
 if __name__ == "__main__":
     try:
         input_file = argv[1]
-        print("DAY 1:", count_passports(input_file, 1))
-        print("DAY 2:", count_passports(input_file, 2))
+        print("PART 1:", count_passports(input_file, 1))
+        print("PART 2:", count_passports(input_file, 2))
     except IndexError:
         print("Enter path to data file!")

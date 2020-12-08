@@ -64,5 +64,5 @@ if __name__ == "__main__":
     input_file = argv[1]
     boarding_passes = parse_input(input_file)
     max_seat_num = part1(boarding_passes)
-    print("DAY 1:", max_seat_num)
-    print("DAY 2:", part2(boarding_passes, max_seat_num))
+    print("PART 1:", max_seat_num)
+    print("PART 2:", part2(boarding_passes, max_seat_num))

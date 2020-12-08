@@ -101,5 +101,5 @@ def count_descendants(bag_graph: Dict, node: str) -> int:
 if __name__ == "__main__":
     input_file = argv[1]
     graph = construct_graph(input_file)
-    print("DAY 1:", count_ancestors(graph, "shiny gold"))
-    print("DAY 2:", count_descendants(graph, "shiny gold"))
+    print("PART 1:", count_ancestors(graph, "shiny gold"))
+    print("PART 2:", count_descendants(graph, "shiny gold"))

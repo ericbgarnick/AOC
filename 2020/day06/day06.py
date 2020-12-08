@@ -43,5 +43,5 @@ def count_answers(group: List[str], distinct: bool) -> int:
 if __name__ == "__main__":
     input_file = argv[1]
     grouped_responses = parse_input(input_file)
-    print("DAY 1:", sum_group_totals(grouped_responses, 1))
-    print("DAY 2:", sum_group_totals(grouped_responses, 2))
+    print("PART 1:", sum_group_totals(grouped_responses, 1))
+    print("PARt 2:", sum_group_totals(grouped_responses, 2))

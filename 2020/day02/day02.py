@@ -27,7 +27,7 @@ if __name__ == "__main__":
     try:
         input_file = argv[1]
         part1, part2 = solution(input_file)
-        print("DAY 1:", part1)
-        print("DAY 2:", part2)
+        print("PART 1:", part1)
+        print("PART 2:", part2)
     except IndexError:
         print("Enter path to data file!")
