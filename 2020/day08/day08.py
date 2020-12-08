@@ -11,8 +11,8 @@ def parse_input(filename: str) -> List[Tuple[str, int]]:
 
 
 def run(instructions: List[Optional[Tuple[str, int]]]) -> Tuple[int, int]:
-    accumulator = 0
-    current_pos = 0
+    """Replace visited instructions with None so repeat reads fail"""
+    accumulator = current_pos = 0
     current_ins = instructions[current_pos]
     while current_ins:
         instructions[current_pos] = None
@@ -27,8 +27,10 @@ def run(instructions: List[Optional[Tuple[str, int]]]) -> Tuple[int, int]:
         else:
             raise ValueError(f"Unknown operation: {op}")
         if current_pos == len(instructions):
+            # Successfully reached the end of instructions
             current_ins = None
         else:
+            # Advance to the next instruction
             current_ins = instructions[current_pos]
     return accumulator, current_pos
 
@@ -38,12 +40,13 @@ def find_changeable_ops(instructions: List[Tuple[str, int]]) -> Dict[str, List[i
     changes = {"nop": [], "jmp": []}
     for i, instr in enumerate(instructions):
         op, arg = instr
-        if op in {"nop", "jmp"} and  arg != 1:
+        if op in {"nop", "jmp"} and arg != 1:
             changes[op].append(i)
     return changes
 
 
 def try_alternatives(instructions: List[Tuple[str, int]], changes: Dict[str, List[int]]) -> int:
+    """Run instructions repeatedly, exchanging one instance of 'nop' and 'jmp' for each run"""
     swap = {"nop": "jmp", "jmp": "nop"}
     for op in ["nop", "jmp"]:
         for change in changes[op]:
@@ -62,4 +65,3 @@ if __name__ == "__main__":
     print("PART 1:", run([i for i in instruction_set])[0])
     possible_changes = find_changeable_ops(instruction_set)
     print("PART 2:", try_alternatives(instruction_set, possible_changes))
-
