@@ -25,8 +25,8 @@ def part2(filename: str) -> int:
 
     # Base case:
     # 1: 0 + 1
-    # 2: 1 + 1, 0 + 2
-    # 3: 1 + 1 + 1, 0 + 1 + 2, 0 + 2 + 1, 0 + 3
+    # 2: 0 + 1 + 1, 0 + 2
+    # 3: 0 + 1 + 1 + 1, 0 + 1 + 2, 0 + 2 + 1, 0 + 3
     for j in range(3):
         if jolts.get(j + 1) is not None:
             jolts[j + 1] = 2 ** j
