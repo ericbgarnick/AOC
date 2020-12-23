@@ -4,6 +4,12 @@ from sys import argv
 from typing import Dict, Set, Union, List, Optional
 
 TileType = Dict[str, Union[str, int]]
+SEA_MONSTER_SIZE = 20
+SEA_MONSTER = [[18], [0, 5, 6, 11, 12, 17, 18, 19], [1, 4, 7, 10, 13, 16]]
+
+
+class NoMonstersException(BaseException):
+    pass
 
 
 # == PART 1 == #
@@ -18,18 +24,61 @@ def part_1(filename: str) -> int:
 
 # == PART 2 == #
 def part_2(filename: str) -> int:
+    image = create_image(filename)
+    num_filled_pixels = sum(row.count("#") for row in image)
+
+    sea_monster_pixels = find_sea_monsters(image)
+    if sea_monster_pixels:
+        # original
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_x(image))
+    if sea_monster_pixels:
+        # flipped on x
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_y(image))
+    if sea_monster_pixels:
+        # flipped on y
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_x(flip_on_y(image)))
+    if sea_monster_pixels:
+        # flipped on x & y
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_neg_1(image))
+    if sea_monster_pixels:
+        # flipped on -1
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_x(flip_on_neg_1(image)))
+    if sea_monster_pixels:
+        # flipped on -1 & x
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_y(flip_on_neg_1(image)))
+    if sea_monster_pixels:
+        # flipped on -1 & y
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        sea_monster_pixels = find_sea_monsters(flip_on_x(flip_on_y(flip_on_neg_1(image))))
+    if sea_monster_pixels:
+        # flipped on -1 & x & y
+        return num_filled_pixels - sea_monster_pixels
+    else:
+        raise NoMonstersException
+
+
+def create_image(filename: str) -> List[str]:
     all_tiles = read_tiles(filename)
     matched_edges = {}
     for tile_id, tile_img in all_tiles.items():
         record_tile(tile_img, tile_id, matched_edges)
     corner_ids = get_corner_ids(matched_edges)
     arranged = arrange_tiles(all_tiles, matched_edges, corner_ids)
-    # print_tiles(arranged)
     strip_edges(arranged)
-    final_image = stitch_images(arranged)
-    for row in final_image:
-        print(row)
-    return 1
+    return stitch_images(arranged)
 
 
 def arrange_tiles(
@@ -69,6 +118,27 @@ def stitch_images(tiles: List[List[Dict]]) -> List[str]:
                 stitched_row_idx = tile_row_idx * tile_width + img_row_idx
                 stitched[stitched_row_idx].append(img_row)
     return ["".join(stitched_row) for stitched_row in stitched]
+
+
+def find_sea_monsters(image: List[str]) -> int:
+    n = len(image)
+    sea_monster_pixels = set()
+    for row_idx in range(n - 2):
+        for col_idx in range(n - SEA_MONSTER_SIZE):
+            if (image_match(SEA_MONSTER[0], image[row_idx][col_idx: col_idx + SEA_MONSTER_SIZE]) and
+                    image_match(SEA_MONSTER[1], image[row_idx + 1][col_idx: col_idx + SEA_MONSTER_SIZE]) and
+                    image_match(SEA_MONSTER[2], image[row_idx + 2][col_idx: col_idx + SEA_MONSTER_SIZE])):
+                sea_monster_pixels |= {(row_idx, col_idx + m_idx) for m_idx in SEA_MONSTER[0]}
+                sea_monster_pixels |= {(row_idx + 1, col_idx + m_idx) for m_idx in SEA_MONSTER[1]}
+                sea_monster_pixels |= {(row_idx + 2, col_idx + m_idx) for m_idx in SEA_MONSTER[2]}
+    return len(sea_monster_pixels)
+
+
+def image_match(search_indexes: List[int], image_row_section: str) -> bool:
+    for idx in search_indexes:
+        if image_row_section[idx] != "#":
+            return False
+    return True
 
 
 def orient_first_corner(
@@ -293,4 +363,4 @@ def flip_on_1(image: List[str]) -> List[str]:
 if __name__ == "__main__":
     input_file = argv[1]
     print("PART 1:", part_1(input_file))
-    part_2(input_file)
+    print("PART 2:", part_2(input_file))
