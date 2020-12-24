@@ -8,21 +8,7 @@ CUP_LABELS = [3, 1, 8, 9, 4, 6, 5, 7, 2]
 
 def play(num_moves, max_cup: int = 9, part_num: int = 1) -> int:
     """Linked list of dicts for cups, extra dict for constant-time access to cups"""
-    prev_cup = {"val": CUP_LABELS[0], "next": {}}
-    cup_map = {CUP_LABELS[0]: prev_cup}
-    for cup_label in CUP_LABELS[1:]:
-        cur_cup = {"val": cup_label, "next": {}}
-        cup_map[cup_label] = cur_cup
-        prev_cup["next"] = cur_cup
-        prev_cup = cur_cup
-
-    for addl_cup_labal in range(10, max_cup + 1):
-        cur_cup = {"val": addl_cup_labal, "next": {}}
-        cup_map[addl_cup_labal] = cur_cup
-        prev_cup["next"] = cur_cup
-        prev_cup = cur_cup
-
-    prev_cup["next"] = cup_map[CUP_LABELS[0]]
+    cup_map = set_up_cups(max_cup)
 
     cur_cup = cup_map[CUP_LABELS[0]]
     for i in range(num_moves):
@@ -30,6 +16,28 @@ def play(num_moves, max_cup: int = 9, part_num: int = 1) -> int:
         cur_cup = cur_cup["next"]
 
     return after_1(cup_map, part_num)
+
+
+def set_up_cups(max_cup: int) -> Dict:
+    prev_cup = {"val": CUP_LABELS[0], "next": {}}
+    cup_map = {CUP_LABELS[0]: prev_cup}
+
+    for cup_label in CUP_LABELS[1:]:
+        cur_cup = {"val": cup_label, "next": {}}
+        cup_map[cup_label] = cur_cup
+        prev_cup["next"] = cur_cup
+        prev_cup = cur_cup
+
+    for addl_cup_labal in range(len(CUP_LABELS) + 1, max_cup + 1):
+        cur_cup = {"val": addl_cup_labal, "next": {}}
+        cup_map[addl_cup_labal] = cur_cup
+        prev_cup["next"] = cur_cup
+        prev_cup = cur_cup
+
+    # Loop last cup to first
+    prev_cup["next"] = cup_map[CUP_LABELS[0]]
+
+    return cup_map
 
 
 def move_cups(cur_cup: Dict, cup_map: Dict, max_cup: int):
