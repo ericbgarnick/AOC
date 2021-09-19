@@ -6,9 +6,9 @@ import argparse
 from typing import List
 
 
-def calculate_total_fuel(modules: List[str], simple: bool = True) -> int:
+def calculate_total_fuel(modules: List[str], day_num: int) -> int:
     calculation = (
-        calculate_fuel_for_module_simple if simple
+        calculate_fuel_for_module_simple if day_num == 1
         else calculate_fuel_for_module_with_fuel
     )
     return sum(calculation(int(module_mass)) for module_mass in modules)
@@ -35,8 +35,8 @@ def main():
     with open(data_file, "r") as f_in:
         data = f_in.readlines()
 
-    print(f"PART 1: {calculate_total_fuel(data)}")
-    print(f"PART 2: {calculate_total_fuel(data, simple=False)}")
+    print(f"PART 1: {calculate_total_fuel(data, day_num=1)}")
+    print(f"PART 2: {calculate_total_fuel(data, day_num=2)}")
 
 
 if __name__ == "__main__":
