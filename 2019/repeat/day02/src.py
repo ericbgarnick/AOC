@@ -13,17 +13,24 @@ from intcode.intcode import Computer
 
 
 def solve(data: List[int], day_num: int, live_run: bool = True):
+    computer = Computer(data)
     if day_num == 1:
         if live_run:
-            data[1] = 12
-            data[2] = 2
-
-    computer = Computer(data)
-    computer.run()
-    if live_run:
-        return computer.dump()[0]
+            computer.initialize({1: 12, 2: 2})
+        computer.run()
+        if live_run:
+            return computer.dump()[0]
+        else:
+            return computer.dump()
     else:
-        return computer.dump()
+        goal = 19690720
+        init_value_range = (0, 100)
+        for noun in range(*init_value_range):
+            for verb in range(*init_value_range):
+                computer.initialize({1: noun, 2: verb})
+                computer.run()
+                if computer.dump()[0] == goal:
+                    return 100 * noun + verb
 
 
 def main():
@@ -36,7 +43,7 @@ def main():
         data = [int(val) for val in f_in.read().strip().split(",")]
 
     print(f"PART 1: {solve(data, day_num=1, live_run=args.live_run)}")
-    # print(f"PART 2: {solve(data, day_num=2)}")
+    print(f"PART 2: {solve(data, day_num=2, live_run=args.live_run)}")
 
 
 if __name__ == "__main__":
