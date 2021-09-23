@@ -9,28 +9,31 @@ from typing import List
 
 sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent))
 
-from intcode.intcode1 import Computer
+from intcode.intcode2 import Computer
 
 
-def solve(data: List[int], day_num: int, live_run: bool = True):
+def solve(data: List[int], day_num: int, live_run: bool = True) -> str:
     computer = Computer(data)
     if day_num == 1:
         if live_run:
             computer.initialize({1: 12, 2: 2})
         computer.run()
         if live_run:
-            return computer.dump()[0]
+            return str(computer.dump()[0])
         else:
-            return computer.dump()
+            return str(computer.dump())
     else:
-        goal = 19690720
-        init_value_range = (0, 100)
-        for noun in range(*init_value_range):
-            for verb in range(*init_value_range):
-                computer.initialize({1: noun, 2: verb})
-                computer.run()
-                if computer.dump()[0] == goal:
-                    return 100 * noun + verb
+        if live_run:
+            goal = 19690720
+            init_value_range = (0, 100)
+            for noun in range(*init_value_range):
+                for verb in range(*init_value_range):
+                    computer.initialize({1: noun, 2: verb})
+                    computer.run()
+                    if computer.dump()[0] == goal:
+                        return str(100 * noun + verb)
+        else:
+            return "No test run available"
 
 
 def main():

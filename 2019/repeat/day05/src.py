@@ -13,8 +13,13 @@ from intcode.intcode2 import Computer
 
 
 def solve(data: List[int], day_num: int, live_run: bool = True):
-    computer = Computer(data, debug=False)
-    computer.run()
+    if live_run:
+        computer = Computer(data)
+        computer.run()
+    else:
+        computer = Computer([1002, 4, 3, 4, 33])
+        computer.run()
+        print(computer.dump())
 
 
 def main():
@@ -33,7 +38,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # data = [1002, 4, 3, 4, 33]
-    # computer = Computer(data, debug=True)
-    # computer.run()
-    # print("MEMORY DUMP:", computer.dump())
