@@ -50,12 +50,14 @@ def count_possible_passwords(check_fn: Callable) -> int:
 def next_non_decreasing_value(value: str) -> str:
     digits = [value[0]]
 
+    # Copy over digits from value
     for digit in value[1:]:
         if digit >= digits[-1]:
             digits.append(digit)
         else:
             break
 
+    # Repeat last added digit (next in value decreases)
     while len(digits) < len(value):
         digits.append(digits[-1])
 

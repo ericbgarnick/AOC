@@ -1,3 +1,4 @@
+"""Implementation for Day 2"""
 from typing import List, Dict
 
 
