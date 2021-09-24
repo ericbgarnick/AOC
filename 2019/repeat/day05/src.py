@@ -12,14 +12,9 @@ sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent))
 from intcode.intcode2 import Computer
 
 
-def solve(data: List[int], day_num: int, live_run: bool = True):
-    if live_run:
-        computer = Computer(data)
-        computer.run()
-    else:
-        computer = Computer([1002, 4, 3, 4, 33])
-        computer.run()
-        print(computer.dump())
+def solve(data: List[int]):
+    computer = Computer(data)
+    computer.run()
 
 
 def main():
@@ -31,9 +26,8 @@ def main():
     with open(data_file, "r") as f_in:
         data = [int(val) for val in f_in.read().strip().split(",")]
 
-    print("PART 1:")
-    solve(data, day_num=1, live_run=args.live_run)
-    # print(f"PART 2: {solve(data, day_num=2, live_run=args.live_run)}")
+    print("** ENTER 1 FOR PART 1, ENTER 5 FOR PART 2 **")
+    solve(data)
 
 
 if __name__ == "__main__":

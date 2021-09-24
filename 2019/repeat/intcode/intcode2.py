@@ -17,12 +17,21 @@ class Computer:
     MULTIPLY = 2
     INPUT = 3
     OUTPUT = 4
+    JUMP_IF_TRUE = 5
+    JUMP_IF_FALSE = 6
+    LESS_THAN = 7
+    EQUALS = 8
 
-    INSTRUCTION_PARAMS = {
-        ADD: 3,
-        MULTIPLY: 3,
-        INPUT: 1,
-        OUTPUT: 1,
+    # Distance to advance instruction pointer for an instruction
+    POINTER_OFFSET = {
+        ADD: 4,
+        MULTIPLY: 4,
+        INPUT: 2,
+        OUTPUT: 2,
+        JUMP_IF_TRUE: 3,
+        JUMP_IF_FALSE: 3,
+        LESS_THAN: 4,
+        EQUALS: 4,
     }
 
     HALT = 99
@@ -62,8 +71,8 @@ class Computer:
         return opcode, pmode_1, pmode_2, pmode_3
 
     def _process_opcode(self, ptr: int, opcode: int, *pmodes: List[int]) -> int:
-        ptr_offset = self.INSTRUCTION_PARAMS[opcode] + 1
-        params = self._memory[ptr + 1: ptr + ptr_offset]
+        pointer_offset = self.POINTER_OFFSET[opcode]
+        params = self._memory[ptr + 1: ptr + pointer_offset]
 
         values = []
         for i, p in enumerate(params):
@@ -91,10 +100,22 @@ class Computer:
             self._memory[params[0]] = int(input("INPUT: "))
         elif opcode == self.OUTPUT:
             print(values[0])
+        elif opcode == self.JUMP_IF_TRUE:
+            if values[0] != 0:
+                ptr = values[1]
+                pointer_offset = 0
+        elif opcode == self.JUMP_IF_FALSE:
+            if values[0] == 0:
+                ptr = values[1]
+                pointer_offset = 0
+        elif opcode == self.LESS_THAN:
+            self._memory[params[2]] = 1 if values[0] < values[1] else 0
+        elif opcode == self.EQUALS:
+            self._memory[params[2]] = 1 if values[0] == values[1] else 0
         else:
             raise UnknownOpCode(opcode)
 
-        return ptr + ptr_offset
+        return ptr + pointer_offset
 
     def dump(self):
         return self._memory
