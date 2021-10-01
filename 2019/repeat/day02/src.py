@@ -9,7 +9,7 @@ from typing import List
 
 sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent))
 
-from intcode.intcode2 import Computer
+from intcode.intcode3 import Computer
 
 
 def solve(data: List[int], day_num: int, live_run: bool = True) -> str:
