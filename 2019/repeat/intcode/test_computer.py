@@ -2,7 +2,7 @@ from collections import deque
 
 import pytest
 
-from intcode3 import Computer
+from intcode4 import Computer
 
 
 def test_init_copies_data():
@@ -56,11 +56,17 @@ def test_initialize():
     computer = Computer(data)
     new_init_data = {0: 7, 2: 8}
 
+    # Adjust values to be reset
+    computer._instruction_pointer = 1
+    computer._relative_base = 1
+
     # WHEN
     computer.initialize(new_init_data)
 
     # THEN
     assert computer._code == data
+    assert computer._instruction_pointer == 0
+    assert computer._relative_base == 0
     memory = computer.dump()
     for idx, val in new_init_data.items():
         assert memory[idx] == val
@@ -69,10 +75,36 @@ def test_initialize():
 @pytest.mark.parametrize(
     "original, final",
     [
-        pytest.param([1, 5, 6, 4, 0, 44, 55], [1, 5, 6, 4, 99, 44, 55], id="add-position-mode"),
-        pytest.param([1101, 44, 55, 4, 0], [1101, 44, 55, 4, 99], id="add-immediate-mode"),
-        pytest.param([2, 5, 6, 4, 0, 9, 11], [2, 5, 6, 4, 99, 9, 11], id="multiply-position-mode"),
-        pytest.param([1102, 9, 11, 4, 0], [1102, 9, 11, 4, 99], id="multiply-immediate-mode"),
+        pytest.param(
+            [1, 5, 6, 4, 0, 44, 55],
+            [1, 5, 6, 4, 99, 44, 55],
+            id="add-position-mode",
+        ),
+        pytest.param(
+            [109, 1, 2201, 6, 7, 6, 0, 44, 55],
+            [109, 1, 2201, 6, 7, 6, 99, 44, 55],
+            id="add-relative-mode",
+        ),
+        pytest.param(
+            [1101, 44, 55, 4, 0],
+            [1101, 44, 55, 4, 99],
+            id="add-immediate-mode",
+        ),
+        pytest.param(
+            [2, 5, 6, 4, 0, 9, 11],
+            [2, 5, 6, 4, 99, 9, 11],
+            id="multiply-position-mode",
+        ),
+        pytest.param(
+            [109, 1, 2202, 6, 7, 6, 0, 9, 11],
+            [109, 1, 2202, 6, 7, 6, 99, 9, 11],
+            id="multiply-relative-mode",
+        ),
+        pytest.param(
+            [1102, 9, 11, 4, 0],
+            [1102, 9, 11, 4, 99],
+            id="multiply-immediate-mode",
+        ),
     ]
 )
 def test_arithmetic(original, final):
@@ -89,8 +121,8 @@ def test_arithmetic(original, final):
 
 def test_input():
     # GIVEN
-    data = [3, 2, 0]
-    input_buffer = deque([99, 88])
+    data = [3, 4, 3, 5, 0]  # Overwrite 0 with 99, write 88 beyond initial program
+    input_buffer = deque([99, 88, 77])
     computer = Computer(
         data,
         io_src=Computer.MEMBUF_IO_SRC,
@@ -100,14 +132,14 @@ def test_input():
     # WHEN
     result = computer.run()
 
-    assert computer.dump() == [3, 2, 99]
-    assert list(computer.get_input_buffer()) == [88]
+    assert computer.dump() == [3, 4, 3, 5, 99, 88]
+    assert list(computer.get_input_buffer()) == [77]
     assert result == 0
 
 
 @pytest.mark.parametrize(
     "data, output", [
-        pytest.param([4, 2, 99], [99], id="position-mode"),
+        pytest.param([4, 5, 4, 4, 99], [0, 99], id="position-mode"),
         pytest.param([104, 2, 99], [2], id="immediate-mode"),
     ]
 )
@@ -174,4 +206,24 @@ def test_compare(original, final):
 
     # THEN
     assert computer.dump() == final
+    assert result == 0
+
+
+@pytest.mark.parametrize(
+    "data, offset",
+    [
+        pytest.param([109, 1, 99], 1, id="position-mode"),
+        pytest.param([109, 1, 209, 0, 99], 2, id="relative-mode"),
+        pytest.param([9, 3, 99, 1], 1, id="immediate-mode"),
+    ]
+)
+def test_rel_base_adjust(data, offset):
+    # GIVEN
+    computer = Computer(data)
+
+    # WHEN
+    result = computer.run()
+
+    # THEN
+    assert computer._relative_base == offset
     assert result == 0
