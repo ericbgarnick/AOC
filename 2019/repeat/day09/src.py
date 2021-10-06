@@ -9,25 +9,25 @@ from intcode.intcode4 import Computer
 
 
 def solve(data: List[int], day_num: int) -> int:
-    if day_num == 1:
-        computer = Computer(
-            data,
-            io_src=Computer.MEMBUF_IO_SRC,
-            io_dest=Computer.MEMBUF_IO_DEST,
-        )
-        computer.add_input(1)
-        result = computer.run()
+    computer = Computer(
+        data,
+        io_src=Computer.MEMBUF_IO_SRC,
+        io_dest=Computer.MEMBUF_IO_DEST,
+    )
+    computer.add_input(day_num)
+    result = computer.run()
 
-        output_buffer = computer.get_output_buffer()
+    # Print out any erroring opcodes
+    output_buffer = computer.get_output_buffer()
+    next_output = output_buffer.popleft()
+    while output_buffer:
+        print(next_output)
         next_output = output_buffer.popleft()
-        while output_buffer:
-            print(next_output)
-            next_output = output_buffer.popleft()
 
-        if result:
-            return -1
-        else:
-            return next_output
+    if result:
+        return -1
+    else:
+        return next_output
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
         data = [int(val) for val in f_in.read().strip().split(",")]
 
     print("PART 1:", solve(data, day_num=1))
-    # print("PART 2:", solve(data, day_num=2))
+    print("PART 2:", solve(data, day_num=2))
 
 
 if __name__ == "__main__":
