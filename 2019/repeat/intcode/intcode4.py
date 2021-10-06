@@ -163,7 +163,8 @@ class Computer:
             elif mode == Computer.IMMEDIATE_MODE:
                 values.append(p)
             elif mode == Computer.RELATIVE_MODE:
-                values.append(self._get_value(self._relative_base + p))
+                params[i] = self._relative_base + p
+                values.append(self._get_value(params[i]))
             else:
                 raise UnknownMode(mode)
 

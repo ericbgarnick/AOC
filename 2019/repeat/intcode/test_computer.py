@@ -121,8 +121,8 @@ def test_arithmetic(original, final):
 
 def test_input():
     # GIVEN
-    data = [3, 4, 3, 5, 0]  # Overwrite 0 with 99, write 88 beyond initial program
-    input_buffer = deque([99, 88, 77])
+    data = [109, 1, 3, 8, 3, 9, 203, -1, 0]  # Overwrite 0 with 99, write 88 beyond initial program
+    input_buffer = deque([99, 88, 77, 66])
     computer = Computer(
         data,
         io_src=Computer.MEMBUF_IO_SRC,
@@ -132,8 +132,8 @@ def test_input():
     # WHEN
     result = computer.run()
 
-    assert computer.dump() == [3, 4, 3, 5, 99, 88]
-    assert list(computer.get_input_buffer()) == [77]
+    assert computer.dump() == [77, 1, 3, 8, 3, 9, 203, -1, 99, 88]
+    assert list(computer.get_input_buffer()) == [66]
     assert result == 0
 
 
@@ -226,4 +226,30 @@ def test_rel_base_adjust(data, offset):
 
     # THEN
     assert computer._relative_base == offset
+    assert result == 0
+
+
+def test_quine():
+    # GIVEN
+    data = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+    computer = Computer(data, io_dest=Computer.MEMBUF_IO_DEST)
+
+    # WHEN
+    result = computer.run()
+
+    # THEN
+    assert list(computer.get_output_buffer()) == data
+    assert result == 0
+
+
+def test_expected_output_length():
+    # GIVEN
+    data = [1102, 34915192, 34915192, 7, 4, 7, 99, 0]
+    computer = Computer(data, io_dest=Computer.MEMBUF_IO_DEST)
+
+    # WHEN
+    result = computer.run()
+
+    # THEN
+    assert len(str(computer.get_output())) == 16
     assert result == 0
