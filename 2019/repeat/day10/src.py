@@ -18,7 +18,21 @@ def solve(data: List[str], day_num: int) -> int:
         return last_shot.point[1] * 100 + last_shot.point[0]
 
 
+def parse_map(asteroid_map: List[str]) -> Set[Tuple[int, int]]:
+    result = set()
+    for r, row in enumerate(asteroid_map):
+        for c, point in enumerate(row):
+            if point == "#":
+                result.add((r, c))
+    return result
+
+
 def find_station(asteroid_locs: Set[Tuple[int, int]]) -> Dict:
+    """
+    Return a dictionary with values of the number of asteroids visible from
+    the chosen station, and data for coordinates, angle and distance from
+    station for each asteroid.
+    """
     asteroids_from_station = []
     most_seen_from_station = 0
     for ast in asteroid_locs:
@@ -31,22 +45,18 @@ def find_station(asteroid_locs: Set[Tuple[int, int]]) -> Dict:
             most_seen_from_station = num_visible
             asteroids_from_station = asteroid_data
     return {
-        "asteroids_from_station": asteroids_from_station,
         "most_seen_from_station": most_seen_from_station,
+        "asteroids_from_station": asteroids_from_station,
     }
 
 
-def parse_map(asteroid_map: List[str]) -> Set[Tuple[int, int]]:
-    result = set()
-    for r, row in enumerate(asteroid_map):
-        for c, point in enumerate(row):
-            if point == "#":
-                result.add((r, c))
-    return result
-
-
 def calc_angle(source: Tuple[int, int], point: Tuple[int, int]) -> float:
-    """Return the angle in radians of point from a vertical line through source."""
+    """
+    Return the angle in radians of point from a vertical line through source.
+
+    Points directly above source are 2pi rather than 0 so they will appear
+    first when sorted in descending order.
+    """
     if source[0] == point[0]:
         if source[1] < point[1]:
             angle = 3 * math.pi / 2
@@ -74,12 +84,8 @@ def calc_dist(p1: Tuple[int, int], p2: Tuple[int, int]) -> float:
 
 
 def create_asteroid_map(asteroids: List[Asteroid]) -> Dict[float, List[Asteroid]]:
-    asteroids.sort(key=lambda a: a.angle)
-    return create_angle_map(asteroids)
-
-
-def create_angle_map(asteroids: List[Asteroid]) -> Dict[float, List[Asteroid]]:
     """Return a dictionary of angles mapped to lists of Asteroids, sorted by distances."""
+    asteroids.sort(key=lambda a: a.angle)
     asteroid_map = {a.angle: [] for a in asteroids}
     for a in asteroids:
         asteroid_map[a.angle].append(a)
@@ -97,11 +103,12 @@ def shoot_asteroids(asteroid_map: Dict[float, List[Asteroid]], num_shots: int) -
     while counter < num_shots:
         angle = angles[angle_idx % num_angles]
         possible_tgts = asteroid_map[angle]
-        while not possible_tgts:
+        while not possible_tgts:  # No asteroids left at this angle
             angle_idx += 1
             angle = angles[angle_idx % num_angles]
             possible_tgts = asteroid_map[angle]
         tgt = asteroid_map[angle][0]
+        # Remove asteroid from possible targets at this angle
         asteroid_map[angle] = asteroid_map[angle][1:]
         counter += 1
         angle_idx += 1
