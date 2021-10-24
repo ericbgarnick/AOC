@@ -156,9 +156,6 @@ class Computer:
     def _process_opcode(self, opcode: int, *pmodes: List[int]):
         pointer_offset = self.POINTER_OFFSET[opcode]
         params = [self._get_value(self._instruction_pointer + i) for i in range(1, pointer_offset)]
-        # print("PARAMS NEW:", params)
-        # params = self._memory[self._instruction_pointer + 1: self._instruction_pointer + pointer_offset]
-        # print("PARAMS OLD:", params)
 
         values = []
         for i, p in enumerate(params):
