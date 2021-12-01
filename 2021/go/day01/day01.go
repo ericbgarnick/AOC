@@ -2,14 +2,11 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"strconv"
 )
-
-const target = 2020
 
 func main() {
 	dataFile := flag.String("f", "../data/01.txt", "Path to input data file")
@@ -28,20 +25,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Part 1 (two sum)
-	res, err := twoSum(inputValues)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	// Part 1
+	res := singleDepthChanges(inputValues)
 	fmt.Printf("Part 1: %d\n", res)
 
-	// Part 2 (three sum)
-	res, err = threeSum(inputValues)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	// Part 2
+	res = tripleDepthChanges(inputValues)
 	fmt.Printf("Part 2: %d\n", res)
 }
 
@@ -58,43 +47,44 @@ func scanInputData(scanner *bufio.Scanner) ([]int, error) {
 	return values, nil
 }
 
-// twoSum returns the product of the first two values found that sum to target.
-func twoSum(values []int) (int, error) {
-	addends := map[int]struct{}{}
-	for _, v := range values {
-		needed := target - v
-		if _, ok := addends[v]; ok {
-			return multiply(v, target-v), nil
+// singleDepthChanges returns the number of depth measurements that are greater than the previous depth.
+func singleDepthChanges(values []int) int {
+	count := 0
+	i := 1
+	for i < len(values) {
+		if values[i] > values[i-1] {
+			count++
 		}
-		addends[needed] = struct{}{}
+		i++
 	}
-	return -1, errors.New("two sum not found for given values")
+	return count
 }
 
-// threeSum returns the product of the first three values found that sum to target.
-func threeSum(values []int) (int, error) {
-	addends := map[int]int{}
-	for i, v1 := range values {
-		for _, v2 := range values[i:] {
-			needed := target - v1 - v2
-			if needed > 0 {
-				addends[needed] = v1 * v2
-			}
-		}
+// tripleDepthChanges returns the number of three-value windows that are greater than the previous window.
+func tripleDepthChanges(values []int) int {
+	count := 0
+	window1 := sum(values[:3]...)
+	window2 := sum(values[1:4]...)
+	if window2 > window1 {
+		count++
 	}
-	for _, v := range values {
-		if prod, ok := addends[v]; ok {
-			return multiply(v, prod), nil
+	end := 4
+	for end < len(values) {
+		window1 += values[end-1] - values[end-4]
+		window2 += values[end] - values[end-3]
+		if window2 > window1 {
+			count++
 		}
+		end++
 	}
-	return -1, errors.New("three sum not found for given values")
+	return count
 }
 
-// multiply returns the product of factors.
-func multiply(factors ...int) int {
-	res := 1
-	for _, v := range factors {
-		res *= v
+// sum returns the sum of values.
+func sum(values ...int) int {
+	res := 0
+	for _, v := range values {
+		res += v
 	}
 	return res
 }
