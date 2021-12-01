@@ -47,7 +47,7 @@ func scanInputData(scanner *bufio.Scanner) ([]int, error) {
 	return values, nil
 }
 
-// singleDepthChanges returns the number of depth measurements that are greater than the previous depth.
+// singleDepthChanges returns the number of depth values that are greater than the preceding value.
 func singleDepthChanges(values []int) int {
 	count := 0
 	i := 1
@@ -60,7 +60,7 @@ func singleDepthChanges(values []int) int {
 	return count
 }
 
-// tripleDepthChanges returns the number of three-value windows that are greater than the previous window.
+// tripleDepthChanges returns the number of 3-value windows that are greater than the preceding window.
 func tripleDepthChanges(values []int) int {
 	count := 0
 	window1 := sum(values[:3]...)
