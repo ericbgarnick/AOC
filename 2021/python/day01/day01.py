@@ -7,6 +7,10 @@ def parse_input(filename: str) -> List[int]:
 
 
 def part1(depths: List[int]) -> int:
+    """
+    Return the number of values in depths that are
+    greater than the preceding value.
+    """
     count = 0
     i = 1
     while i < len(depths):
@@ -17,16 +21,20 @@ def part1(depths: List[int]) -> int:
 
 
 def part2(depths: List[int]) -> int:
+    """
+    Return the number of 3-value windows in depths that are
+    greater than the preceding 3-value window.
+    """
     window_1 = sum(depths[:3])
     window_2 = sum(depths[1:4])
     count = 1 if window_2 > window_1 else 0
-    windows_end = 4
-    while windows_end < len(depths):
-        window_2 += depths[windows_end] - depths[windows_end - 3]
-        window_1 += depths[windows_end - 1] - depths[windows_end - 4]
+    end = 4
+    while end < len(depths):
+        window_1 += depths[end - 1] - depths[end - 4]
+        window_2 += depths[end] - depths[end - 3]
         if window_2 > window_1:
             count += 1
-        windows_end += 1
+        end += 1
     return count
 
 
