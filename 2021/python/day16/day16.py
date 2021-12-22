@@ -147,9 +147,9 @@ def part2(packet: Packet) -> int:
 def main():
     try:
         input_file = argv[1]
-        cave_map = parse_input(input_file)
-        print("PART 1:", part1(cave_map))
-        print("PART 2:", part2(cave_map))
+        packet = parse_input(input_file)
+        print("PART 1:", part1(packet))
+        print("PART 2:", part2(packet))
     except IndexError:
         print("Enter path to data file!")
 
