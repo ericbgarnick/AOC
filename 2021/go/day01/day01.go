@@ -13,6 +13,7 @@ func PartOne() {
 	f, err := os.Open("../data/01.txt")
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	defer f.Close()
@@ -28,6 +29,7 @@ func PartOne() {
 		curVal, err = strconv.ParseInt(strings.TrimSpace(scanner.Text()), 10, 64)
 		if err != nil {
 			log.Fatal(err)
+			return
 		}
 		if prevVal != 0 && curVal > prevVal {
 			increases++
@@ -36,15 +38,17 @@ func PartOne() {
 	}
 	if err = scanner.Err(); err != nil {
 		log.Fatal(err)
+		return
 	}
 
-	fmt.Printf("Counted %d increases\n", increases)
+	fmt.Printf("Part 1 counted %d increases\n", increases)
 }
 
 func PartTwo() {
 	f, err := os.Open("../data/01.txt")
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	defer f.Close()
@@ -60,6 +64,7 @@ func PartTwo() {
 
 		if err != nil {
 			log.Fatal(err)
+			return
 		}
 		if window[3] != 0 && window[0] > window[3] {
 			increases++
@@ -70,7 +75,8 @@ func PartTwo() {
 	}
 	if err = scanner.Err(); err != nil {
 		log.Fatal(err)
+		return
 	}
 
-	fmt.Printf("Counted %d increases\n", increases)
+	fmt.Printf("Part 2 counted %d increases\n", increases)
 }
