@@ -1,54 +1,45 @@
+from itertools import accumulate
+from typing import List
+
 from y2022.python.shared import get_data_file_path
 
-SELF_SHAPES = "XYZ"
-OPPONENT_SHAPES = "ABC"
-
-WIN_SCORE = 6
-DRAW_SCORE = 3
-LOSE_SCORE = 0
+ALPHABET_START = ord("a")
+ALPHABET_LENGTH = 26
+GROUP_SIZE = 3
 
 
 def main():
-    wrong_score = 0
-    right_score = 0
+    per_rucksack = 0
+    per_group = 0
+    group = []
     with open(get_data_file_path(3), "r") as f_in:
         for line in f_in:
-            opponent_shape, other_value = line.strip().split()
-            wrong_score += score_round_wrong(opponent_shape, other_value)
-            right_score += score_round_right(opponent_shape, other_value)
-    print("PART 1:", wrong_score)
-    print("PART 2:", right_score)
+            line = line.strip()
+            per_rucksack += get_priority_per_rucksack(line)
+            group.append(line)
+            if len(group) == GROUP_SIZE:
+                per_group += get_common_item_priority(group)
+                group = []
+    print("PART 1:", per_rucksack)
+    print("PART 2:", per_group)
 
 
-def score_round_wrong(opponent_shape: str, self_shape: str) -> int:
-    opponent_idx = OPPONENT_SHAPES.index(opponent_shape)
-    self_idx = SELF_SHAPES.index(self_shape)
-
-    score = self_idx + 1
-    if (opponent_idx + 1) % len(SELF_SHAPES) == self_idx:
-        score += WIN_SCORE
-    elif opponent_idx == self_idx:
-        score += DRAW_SCORE
-
-    return score
+def get_priority_per_rucksack(contents: str) -> int:
+    mid_idx = len(contents) // 2
+    return get_common_item_priority([contents[:mid_idx], contents[mid_idx:]])
 
 
-def score_round_right(opponent_shape: str, outcome: str) -> int:
-    opponent_idx = OPPONENT_SHAPES.index(opponent_shape)
-
-    if outcome == "X":
-        self_idx = (opponent_idx - 1) % len(SELF_SHAPES)
-        score = LOSE_SCORE
-    elif outcome == "Y":
-        self_idx = opponent_idx
-        score = DRAW_SCORE
-    else:
-        self_idx = (opponent_idx + 1) % len(SELF_SHAPES)
-        score = WIN_SCORE
-
-    score += self_idx + 1
-
-    return score
+def get_common_item_priority(item_lists: List[str]) -> int:
+    common_item = list(
+        accumulate(
+            [set(contents) for contents in item_lists],
+            set.intersection
+        )
+    )[-1].pop()
+    priority = ord(common_item.lower()) - ALPHABET_START + 1
+    if common_item.lower() != common_item:
+        priority += ALPHABET_LENGTH
+    return priority
 
 
 if __name__ == "__main__":
