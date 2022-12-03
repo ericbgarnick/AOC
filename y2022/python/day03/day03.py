@@ -1,7 +1,4 @@
-import os
-
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = "/".join(DIR_PATH.split("/")[:-2] + ["data"])
+from y2022.python.shared import get_data_file_path
 
 SELF_SHAPES = "XYZ"
 OPPONENT_SHAPES = "ABC"
@@ -14,8 +11,7 @@ LOSE_SCORE = 0
 def main():
     wrong_score = 0
     right_score = 0
-    input_data_file = DATA_DIR + "/02.txt"
-    with open(input_data_file, "r") as f_in:
+    with open(get_data_file_path(3), "r") as f_in:
         for line in f_in:
             opponent_shape, other_value = line.strip().split()
             wrong_score += score_round_wrong(opponent_shape, other_value)

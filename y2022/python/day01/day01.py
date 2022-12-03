@@ -1,8 +1,6 @@
-import os
 from typing import List
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = "/".join(DIR_PATH.split("/")[:-2] + ["data"])
+from y2022.python.shared import get_data_file_path
 
 
 def main():
@@ -14,8 +12,7 @@ def main():
 def tally_calories() -> List[int]:
     tallies = []
     elf_total = 0
-    input_data_file = DATA_DIR + "/01.txt"
-    with open(input_data_file, "r") as f_in:
+    with open(get_data_file_path(1), "r") as f_in:
         for line in f_in:
             line = line.strip()
             if line:
