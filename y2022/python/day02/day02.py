@@ -11,7 +11,7 @@ LOSE_SCORE = 0
 def main():
     wrong_score = 0
     right_score = 0
-    with open(get_data_file_path(2), "r") as f_in:
+    with open(get_data_file_path(__file__), "r") as f_in:
         for line in f_in:
             opponent_shape, other_value = line.strip().split()
             wrong_score += score_round_wrong(opponent_shape, other_value)

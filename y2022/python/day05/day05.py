@@ -5,7 +5,7 @@ from y2022.python.shared import get_data_file_path
 
 
 def main():
-    with open(get_data_file_path(day_number=5), "r") as f_in:
+    with open(get_data_file_path(__file__), "r") as f_in:
         raw_stacks = []
         line = next(f_in).strip("\n")
         while line:

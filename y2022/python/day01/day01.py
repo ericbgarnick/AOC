@@ -12,7 +12,7 @@ def main():
 def tally_calories() -> List[int]:
     tallies = []
     elf_total = 0
-    with open(get_data_file_path(1), "r") as f_in:
+    with open(get_data_file_path(__file__), "r") as f_in:
         for line in f_in:
             line = line.strip()
             if line:

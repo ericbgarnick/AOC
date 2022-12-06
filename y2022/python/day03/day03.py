@@ -12,7 +12,7 @@ def main():
     per_rucksack = 0
     per_group = 0
     group = []
-    with open(get_data_file_path(3), "r") as f_in:
+    with open(get_data_file_path(__file__), "r") as f_in:
         for line in f_in:
             line = line.strip()
             per_rucksack += get_priority_per_rucksack(line)

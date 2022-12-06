@@ -10,7 +10,7 @@ GROUP_SIZE = 3
 def main():
     num_subsets = 0
     num_overlaps = 0
-    with open(get_data_file_path(day_number=4), "r") as f_in:
+    with open(get_data_file_path(__file__), "r") as f_in:
         for line in f_in:
             range1, range2 = line.strip().split(",")
             range1 = parse_range(range1)
