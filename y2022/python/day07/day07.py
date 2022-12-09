@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 2031851
+Part 2 answer: 2568781
+"""
 from enum import Enum
 from typing import Set, TextIO, Optional, Dict
 

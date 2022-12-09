@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 14375
+Part 2 answer: 10274
+"""
 from y2022.python.shared import get_data_file_path
 
 SELF_SHAPES = "XYZ"

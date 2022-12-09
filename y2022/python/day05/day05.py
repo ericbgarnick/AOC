@@ -1,3 +1,7 @@
+"""
+Part 1 answer: TLFGBZHCN
+Part 2 answer: QRQFHFWCL
+"""
 import re
 from typing import List
 

@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 453
+Part 2 answer: 919
+"""
 from typing import Tuple
 
 from y2022.python.shared import get_data_file_path

@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 1766
+Part 2 answer: 2383
+"""
 from collections import Counter
 
 from y2022.python.shared import get_data_file_path

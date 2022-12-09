@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 72070
+Part 2 answer: 211805
+"""
 from typing import List
 
 from y2022.python.shared import get_data_file_path

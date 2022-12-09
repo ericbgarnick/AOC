@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 7581
+Part 2 answer: 2525
+"""
 from itertools import accumulate
 from typing import List
 
