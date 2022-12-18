@@ -23,11 +23,13 @@ def main():
     part_1(start, end, topo_map)
     part_2(end, topo_map)
 
+
 def part_1(start: Tuple[int, int], end: Tuple[int, int], topo_map: List[List[str]]):
     distances = [[-1 for _ in range(len(topo_map[0]))] for _ in range(len(topo_map))]
     distances[start[0]][start[1]] = 0
     navigate(topo_map, distances, deque([(start[0], start[1])]), direction="ascending")
     print("PART 1:", distances[end[0]][end[1]])
+
 
 def part_2(start: Tuple[int, int], topo_map: List[List[str]]):
     distances = [[-1 for _ in range(len(topo_map[0]))] for _ in range(len(topo_map))]
