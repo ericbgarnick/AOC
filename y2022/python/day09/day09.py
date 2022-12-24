@@ -42,7 +42,7 @@ class Rope:
 def main():
     rope1 = Rope(length=2)
     rope2 = Rope(length=10)
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         for line in f_in:
             direction, distance = line.strip().split()
             rope1.move(direction, int(distance))

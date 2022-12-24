@@ -4,7 +4,7 @@ Part 2 answer: 21800916620 (with help from Reddit)
 """
 import re
 from collections import deque
-from typing import List, Callable
+from typing import Callable
 
 from y2022.python.shared import get_data_file_path
 
@@ -15,7 +15,7 @@ PART_2_NUM_ROUNDS = 10_000
 class Monkey:
     def __init__(
         self,
-        items: List[int],
+        items: list[int],
         inspect_op: Callable,
         inspect_val: int,
         test_val: int,
@@ -34,7 +34,7 @@ class Monkey:
     def __str__(self):
         return f"Monkey: {self.test_val}"
 
-    def misbehave(self, monkeys: List['Monkey'], custom_relief: bool):
+    def misbehave(self, monkeys: list['Monkey'], custom_relief: bool):
         while len(self.items):
             self._inspect_item(custom_relief)
             self._test_item(monkeys)
@@ -52,7 +52,7 @@ class Monkey:
         except IndexError:
             pass
 
-    def _test_item(self, monkeys: List['Monkey']):
+    def _test_item(self, monkeys: list['Monkey']):
         try:
             item = self.items.popleft()
             if item % self.test_val == 0:
@@ -66,7 +66,7 @@ class Monkey:
         self.items.append(item)
 
 
-def create_monkey(characteristics: List[str]) -> Monkey:
+def create_monkey(characteristics: list[str]) -> Monkey:
     items = [int(item) for item in re.findall(r"\d+", characteristics[1])]
     inspect_op, inspect_val = characteristics[2].split()[-2:]
     try:
@@ -88,7 +88,7 @@ def main():
     monkeys_rd_1 = []
     monkeys_rd_2 = []
     relief_factor = 1
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         monkey_characteristics = []
         for line in f_in:
             if line == "\n":
@@ -118,7 +118,7 @@ def main():
     print("PART 2:", get_monkey_business_level(monkeys_rd_2))
 
 
-def get_monkey_business_level(monkeys: List[Monkey]) -> int:
+def get_monkey_business_level(monkeys: list[Monkey]) -> int:
     inspections = sorted([m.inspections for m in monkeys], reverse=True)
     return inspections[0] * inspections[1]
 

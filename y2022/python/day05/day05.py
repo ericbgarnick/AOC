@@ -3,13 +3,12 @@ Part 1 answer: TLFGBZHCN
 Part 2 answer: QRQFHFWCL
 """
 import re
-from typing import List
 
 from y2022.python.shared import get_data_file_path
 
 
 def main():
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         raw_stacks = []
         line = next(f_in).strip("\n")
         while line:
@@ -24,7 +23,7 @@ def main():
     print("PART 2:", "".join(stack[-1] for stack in stacks_2))
 
 
-def process_stacks(raw_stacks: List[str]):
+def process_stacks(raw_stacks: list[str]):
     stacks = []
     rotated = _rotate_90_deg(raw_stacks)
     for row in rotated:
@@ -33,7 +32,7 @@ def process_stacks(raw_stacks: List[str]):
     return stacks
 
 
-def _rotate_90_deg(raw: List[str]) -> List[str]:
+def _rotate_90_deg(raw: list[str]) -> list[str]:
     result = [[] for _ in range(len(raw[-2]))]
     for raw_row in raw[-1::-1]:
         for i in range(len(raw_row)):
@@ -41,13 +40,13 @@ def _rotate_90_deg(raw: List[str]) -> List[str]:
     return ["".join(row) for row in result]
 
 
-def process_instruction_9000(stacks: List[List[str]], instruction: str):
+def process_instruction_9000(stacks: list[list[str]], instruction: str):
     amount, origin, destination = re.findall(r"\d+", instruction)
     for _ in range(int(amount)):
         stacks[int(destination) - 1].append(stacks[int(origin) - 1].pop())
 
 
-def process_instruction_9001(stacks: List[List[str]], instruction: str):
+def process_instruction_9001(stacks: list[list[str]], instruction: str):
     amount, origin, destination = re.findall(r"\d+", instruction)
     crane = []
     for _ in range(int(amount)):

@@ -3,7 +3,7 @@ Part 1 answer: 2031851
 Part 2 answer: 2568781
 """
 from enum import Enum
-from typing import Set, TextIO, Optional, Dict
+from typing import TextIO, Type, Optional
 
 from y2022.python.shared import get_data_file_path
 
@@ -29,7 +29,7 @@ class Node:
         self.name = name
         self.parent = parent
         self._node_type = node_type
-        self._contents: Set['Node'] = set()
+        self._contents: set['Node'] = set()
         self._size = size
 
     def __str__(self) -> str:
@@ -43,13 +43,13 @@ class Node:
         return sum(c.size for c in self._contents)
 
     @property
-    def contents(self) -> Optional[Set[str]]:
+    def contents(self) -> set[str] | None:
         if self._node_type == NodeType.file:
             return None
         return {c.name for c in self._contents}
 
     @property
-    def path(self) -> Optional[str]:
+    def path(self) -> str | None:
         if self._node_type == NodeType.file:
             return None
         if self.parent:
@@ -62,7 +62,7 @@ class Node:
         self._contents.add(file_or_dir)
 
 
-def parse_terminal_output(buffer: TextIO) -> Dict[str, Node]:
+def parse_terminal_output(buffer: TextIO) -> dict[str, Node]:
     """
     Return a mapping of path/to/directory/ mapped to the Node for that directory.
     """
@@ -81,7 +81,7 @@ def parse_terminal_output(buffer: TextIO) -> Dict[str, Node]:
     return dir_map
 
 
-def change_directory(dir_name: str, cur_dir: Node, dir_map: Dict[str, Node]) -> Node:
+def change_directory(dir_name: str, cur_dir: Node, dir_map: dict[str, Node]) -> Node:
     if dir_name == PARENT_DIR:
         cur_dir = cur_dir.parent
     elif dir_name == ROOT_DIR_PATH:
@@ -92,7 +92,7 @@ def change_directory(dir_name: str, cur_dir: Node, dir_map: Dict[str, Node]) -> 
     return cur_dir
 
 
-def record_object(output_line: str, cur_dir: Node, dir_map: Dict[str, Node]):
+def record_object(output_line: str, cur_dir: Node, dir_map: dict[str, Node]):
     """
     Create a new Node for output_line.
 
@@ -109,7 +109,7 @@ def record_object(output_line: str, cur_dir: Node, dir_map: Dict[str, Node]):
         cur_dir.add_contents(new_node)
 
 def main():
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         dir_map = parse_terminal_output(f_in)
 
     # PART 1

@@ -11,7 +11,7 @@ MESSAGE_MARKER_LENGTH = 14
 
 
 def main():
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         datastream = f_in.read().strip()
         packet_marker_pos = find_marker(datastream, PACKET_MARKER_LENGTH)
         message_marker_pos = find_marker(datastream, MESSAGE_MARKER_LENGTH)

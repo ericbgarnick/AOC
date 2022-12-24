@@ -4,13 +4,13 @@ Part 2 answer: 590824
 
 Note: Solution assumes a square grid for the forest.
 """
-from typing import List, Any
+from typing import Any
 
 from y2022.python.shared import get_data_file_path
 
 
 def main():
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         forest = []
         for row in f_in:
             forest.append([int(tree) for tree in row.strip()])
@@ -20,7 +20,7 @@ def main():
 ##############
 # - PART 1 - #
 ##############
-def count_visible_trees(forest: List[List[int]]) -> int:
+def count_visible_trees(forest: list[list[int]]) -> int:
     visibility = create_visibility_map(forest, middle_value=0, edge_value=1)
 
     for i in range(1, len(forest) - 1):
@@ -40,8 +40,8 @@ def count_visible_trees(forest: List[List[int]]) -> int:
 
 
 def update_visibility(
-    forest: List[List[int]],
-    visibility: List[List[int]],
+    forest: list[list[int]],
+    visibility: list[list[int]],
     row_idx: int,
     col_idx: int,
     max_height: int,
@@ -59,7 +59,7 @@ def update_visibility(
 ##############
 # - PART 2 - #
 ##############
-def calculate_max_scenic_score(forest: List[List[int]]) -> int:
+def calculate_max_scenic_score(forest: list[list[int]]) -> int:
     scenic_scores = create_visibility_map(forest, middle_value=1, edge_value=0)
 
     for i in range(len(forest)):
@@ -73,8 +73,8 @@ def calculate_max_scenic_score(forest: List[List[int]]) -> int:
 
 
 def calculate_scenic_scores(
-    forest: List[List[int]],
-        scenic_scores: List[List[int]],
+    forest: list[list[int]],
+        scenic_scores: list[list[int]],
         row_idx: int,
         range_start: int,
         range_stop: int,
@@ -113,8 +113,8 @@ def calculate_scenic_scores(
 
 
 def update_sight_distance(
-    tree_heights: List[int],
-    visibility_range: List[int],
+    tree_heights: list[int],
+    visibility_range: list[int],
     tree_height: int,
     col_idx: int,
     rev: bool,
@@ -137,8 +137,8 @@ def update_sight_distance(
 # - HELPERS - #
 ###############
 def create_visibility_map(
-    forest: List[List[int]], middle_value: int, edge_value: int
-) -> List[List[int]]:
+    forest: list[list[int]], middle_value: int, edge_value: int
+) -> list[list[int]]:
     visibility = [[middle_value for _ in range(len(forest))] for _ in range(len(forest))]
     # Update edges
     for i in range(len(visibility)):
@@ -149,7 +149,7 @@ def create_visibility_map(
             visibility[i][-1] = edge_value
     return visibility
 
-def print_map(forest_map: List[List[Any]]):
+def print_map(forest_map: list[list[Any]]):
     print("\n".join([" ".join([str(tree) for tree in row]) for row in forest_map]))
 
 

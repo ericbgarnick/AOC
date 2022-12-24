@@ -2,8 +2,6 @@
 Part 1 answer: 11720
 Part 2 answer: ERCREPCJ
 """
-from typing import List
-
 from y2022.python.shared import get_data_file_path
 
 
@@ -17,7 +15,7 @@ def draw_screen():
     print("\n".join("".join(row) for row in SCREEN))
 
 
-def find_signal_strength(instructions: List[str], check_cycles: List[int]) -> int:
+def find_signal_strength(instructions: list[str], check_cycles: list[int]) -> int:
     register_x = 1
     cycle = 1
     signal_strength = 0
@@ -38,7 +36,7 @@ def find_signal_strength(instructions: List[str], check_cycles: List[int]) -> in
     return signal_strength
 
 
-def draw_image(instructions: List[str]):
+def draw_image(instructions: list[str]):
     global SCREEN
     register_x = 1
     cycle = 1
@@ -63,7 +61,7 @@ def draw_image(instructions: List[str]):
 
 
 def main():
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         instructions = f_in.readlines()
         signal_strength = find_signal_strength(instructions, [220, 180, 140, 100, 60, 20])
         draw_image(instructions)

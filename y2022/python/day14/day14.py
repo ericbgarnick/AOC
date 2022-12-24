@@ -4,7 +4,7 @@ Part 2 answer: 24943
 """
 import re
 from enum import Enum
-from typing import List, Tuple
+from typing import Tuple
 
 from y2022.python.shared import get_data_file_path
 
@@ -27,7 +27,7 @@ def main():
     y_min = float("inf")
     y_max = float("-inf")
     rocks = []
-    with open(get_data_file_path(__file__, sample=False), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1], sample=False), "r") as f_in:
         for line in f_in:
             coords = [int(c) for c in re.findall(r"\d+", line)]
             rock = []
@@ -73,8 +73,8 @@ def main():
 
 
 def place_rock(
-    cave: List[List[str]],
-    rock: [List[Tuple[int, int]]],
+    cave: list[list[str]],
+    rock: [list[Tuple[int, int]]],
     x_offset: int,
 ):
     for i in range(len(rock) - 1):
@@ -89,14 +89,14 @@ def place_rock(
                 cave[y_val][x_val - x_offset] = ROCK
 
 
-def clear_sand(cave: List[List[str]]):
+def clear_sand(cave: list[list[str]]):
     for row in cave:
         for i, material in enumerate(row):
             if material == SAND:
                 row[i] = AIR
 
 
-def descend_1(cave: List[List[str]], cur_pos: Tuple[int, int]) -> DescentResult:
+def descend_1(cave: list[list[str]], cur_pos: Tuple[int, int]) -> DescentResult:
     cur_x, cur_y = cur_pos
 
     if cur_y == len(cave) - 1:
@@ -116,7 +116,7 @@ def descend_1(cave: List[List[str]], cur_pos: Tuple[int, int]) -> DescentResult:
         return DescentResult.rest
 
 
-def descend_2(cave: List[List[str]], cur_pos: Tuple[int, int]) -> DescentResult:
+def descend_2(cave: list[list[str]], cur_pos: Tuple[int, int]) -> DescentResult:
     cur_x, cur_y = cur_pos
 
     if cur_y == 0 and cave[cur_y][cur_x] != AIR:
@@ -133,7 +133,7 @@ def descend_2(cave: List[List[str]], cur_pos: Tuple[int, int]) -> DescentResult:
         return DescentResult.rest
 
 
-def print_cave(cave: List[List[str]]):
+def print_cave(cave: list[list[str]]):
     print("\n".join(["".join(row) for row in cave]))
 
 

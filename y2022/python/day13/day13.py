@@ -3,7 +3,6 @@ Part 1 answer: 5013
 Part 2 answer: 25038
 """
 from functools import cmp_to_key
-from typing import List
 
 from y2022.python.shared import get_data_file_path
 
@@ -16,7 +15,7 @@ def main():
     pair = []
     result = 0
     all_packets = eval(str(DIVIDER_PACKETS))
-    with open(get_data_file_path(__file__, sample=False), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1], sample=False), "r") as f_in:
         for line in f_in:
             line = line.strip()
             if not line:
@@ -39,7 +38,7 @@ def main():
     print("PART 2:", decoder_key)
 
 
-def compare_packets(packet1: List, packet2: List) -> int:
+def compare_packets(packet1: list, packet2: list) -> int:
     """
     Return:
         -1 if packet1 <  packet2

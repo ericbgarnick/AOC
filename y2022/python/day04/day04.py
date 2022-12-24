@@ -2,8 +2,6 @@
 Part 1 answer: 453
 Part 2 answer: 919
 """
-from typing import Tuple
-
 from y2022.python.shared import get_data_file_path
 
 ALPHABET_START = ord("a")
@@ -14,7 +12,7 @@ GROUP_SIZE = 3
 def main():
     num_subsets = 0
     num_overlaps = 0
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         for line in f_in:
             range1, range2 = line.strip().split(",")
             range1 = parse_range(range1)
@@ -27,16 +25,16 @@ def main():
     print("PART 2:", num_overlaps)
 
 
-def parse_range(raw_range: str) -> Tuple[int, int]:
+def parse_range(raw_range: str) -> tuple[int, int]:
     val1, val2 = raw_range.split("-")
     return int(val1), int(val2)
 
 
-def is_a_subset(range1: Tuple[int, int], range2: Tuple[int, int]) -> bool:
+def is_a_subset(range1: tuple[int, int], range2: tuple[int, int]) -> bool:
     return range2[0] <= range1[0] and range1[1] <= range2[1]
 
 
-def overlaps(range1: Tuple[int, int], range2: Tuple[int, int]) -> bool:
+def overlaps(range1: tuple[int, int], range2: tuple[int, int]) -> bool:
     if range2[0] <= range1[1] <= range2[1]:
         return True
     if range2[0] <= range1[0] <= range2[1]:

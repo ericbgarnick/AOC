@@ -3,7 +3,6 @@ Part 1 answer: 7581
 Part 2 answer: 2525
 """
 from itertools import accumulate
-from typing import List
 
 from y2022.python.shared import get_data_file_path
 
@@ -16,7 +15,7 @@ def main():
     per_rucksack = 0
     per_group = 0
     group = []
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         for line in f_in:
             line = line.strip()
             per_rucksack += get_priority_per_rucksack(line)
@@ -33,7 +32,7 @@ def get_priority_per_rucksack(contents: str) -> int:
     return get_common_item_priority([contents[:mid_idx], contents[mid_idx:]])
 
 
-def get_common_item_priority(item_lists: List[str]) -> int:
+def get_common_item_priority(item_lists: list[str]) -> int:
     common_item = list(
         accumulate(
             [set(contents) for contents in item_lists],

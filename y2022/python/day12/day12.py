@@ -3,7 +3,7 @@ Part 1 answer: 423
 Part 2 answer: 416
 """
 from collections import deque
-from typing import List, Tuple, Optional
+from typing import Tuple
 
 from y2022.python.shared import get_data_file_path
 
@@ -14,7 +14,7 @@ def main():
     topo_map = []
     start = None
     end = None
-    with open(get_data_file_path(__file__, sample=False), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1], sample=False), "r") as f_in:
         for row_num, line in enumerate(f_in):
             line = list(line.strip())
             if "S" in line:
@@ -28,14 +28,14 @@ def main():
     part_2(end, topo_map)
 
 
-def part_1(start: Tuple[int, int], end: Tuple[int, int], topo_map: List[List[str]]):
+def part_1(start: Tuple[int, int], end: Tuple[int, int], topo_map: list[list[str]]):
     distances = [[-1 for _ in range(len(topo_map[0]))] for _ in range(len(topo_map))]
     distances[start[0]][start[1]] = 0
     navigate(topo_map, distances, deque([(start[0], start[1])]), direction="ascending")
     print("PART 1:", distances[end[0]][end[1]])
 
 
-def part_2(start: Tuple[int, int], topo_map: List[List[str]]):
+def part_2(start: Tuple[int, int], topo_map: list[list[str]]):
     distances = [[-1 for _ in range(len(topo_map[0]))] for _ in range(len(topo_map))]
     distances[start[0]][start[1]] = 0
     print("PART 2:")
@@ -49,11 +49,11 @@ def part_2(start: Tuple[int, int], topo_map: List[List[str]]):
 
 
 def navigate(
-    topo_map: List[List[str]],
-    distances: List[List[int]],
-    to_visit: Optional[deque],
+    topo_map: list[list[str]],
+    distances: list[list[int]],
+    to_visit: deque | None,
     direction: str,
-    goal: Optional[str] = None,
+    goal: str | None = None,
 ):
     goal = goal or ""
     while not GOAL_REACHED and len(to_visit):
@@ -61,9 +61,9 @@ def navigate(
 
 
 def visit(
-    topo_map: List[List[str]],
-    distances: List[List[int]],
-    to_visit: Optional[deque],
+    topo_map: list[list[str]],
+    distances: list[list[int]],
+    to_visit: deque | None,
     direction: str, goal: str,
 ):
     global GOAL_REACHED
@@ -80,8 +80,8 @@ def visit(
 
 
 def get_neighbors(
-    cur: Tuple[int, int], topo_map: List[List[str]], direction: str,
-) -> List[Tuple[int, int]]:
+    cur: Tuple[int, int], topo_map: list[list[str]], direction: str,
+) -> list[Tuple[int, int]]:
     neighbors = []
     elevation = topo_map[cur[0]][cur[1]]
     if cur[0] > 0:

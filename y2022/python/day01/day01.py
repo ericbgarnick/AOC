@@ -2,8 +2,6 @@
 Part 1 answer: 72070
 Part 2 answer: 211805
 """
-from typing import List
-
 from y2022.python.shared import get_data_file_path
 
 
@@ -13,10 +11,10 @@ def main():
     print("PART 2:", sum(tallies[-3:]))
 
 
-def tally_calories() -> List[int]:
+def tally_calories() -> list[int]:
     tallies = []
     elf_total = 0
-    with open(get_data_file_path(__file__), "r") as f_in:
+    with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         for line in f_in:
             line = line.strip()
             if line:
