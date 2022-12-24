@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 5013
+Part 2 answer: 25038
+"""
 from functools import cmp_to_key
 from typing import List
 

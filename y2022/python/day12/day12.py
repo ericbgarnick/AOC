@@ -1,3 +1,7 @@
+"""
+Part 1 answer: 423
+Part 2 answer: 416
+"""
 from collections import deque
 from typing import List, Tuple, Optional
 
