@@ -3,7 +3,7 @@ Part 1 answer: 2031851
 Part 2 answer: 2568781
 """
 from enum import Enum
-from typing import TextIO, Type, Optional
+from typing import Optional, TextIO, Type
 
 from y2022.python.shared import get_data_file_path
 
@@ -19,17 +19,19 @@ class NodeType(Enum):
     file = "file"
     directory = "directory"
 
+
 class Node:
     def __init__(
-        self, name: str,
+        self,
+        name: str,
         node_type: NodeType,
-        parent: Optional['Node'] = None,
+        parent: Optional["Node"] = None,
         size: int = 0,
     ):
         self.name = name
         self.parent = parent
         self._node_type = node_type
-        self._contents: set['Node'] = set()
+        self._contents: set["Node"] = set()
         self._size = size
 
     def __str__(self) -> str:
@@ -58,7 +60,7 @@ class Node:
             path = ""
         return path + f"{self.name}/"
 
-    def add_contents(self, file_or_dir: 'Node'):
+    def add_contents(self, file_or_dir: "Node"):
         self._contents.add(file_or_dir)
 
 
@@ -107,6 +109,7 @@ def record_object(output_line: str, cur_dir: Node, dir_map: dict[str, Node]):
         new_node = Node(node_name, NodeType.file, size=int(dir_or_size))
     if node_name not in cur_dir.contents:
         cur_dir.add_contents(new_node)
+
 
 def main():
     with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:

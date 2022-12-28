@@ -6,7 +6,6 @@ from functools import cmp_to_key
 
 from y2022.python.shared import get_data_file_path
 
-
 DIVIDER_PACKETS = [[[2]], [[6]]]
 
 
@@ -34,7 +33,7 @@ def main():
     decoder_key = 1
     for i, packet in enumerate(sorted_packets):
         if packet in DIVIDER_PACKETS:
-            decoder_key *= (i + 1)
+            decoder_key *= i + 1
     print("PART 2:", decoder_key)
 
 
@@ -70,7 +69,6 @@ def compare_packets(packet1: list, packet2: list) -> int:
     if len(packet1) < len(packet2):
         return -1
     return 0
-
 
 
 if __name__ == "__main__":

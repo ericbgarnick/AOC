@@ -4,7 +4,6 @@ Part 2 answer: 1524637681145
 """
 from y2022.python.shared import get_data_file_path
 
-
 # coords from bottom left corner of shape,
 # not accounting for padding spaces
 SHAPES = [
@@ -87,7 +86,7 @@ def tick(
     shape_pos_x, shape_pos_y = shape_pos
     if shape_can_move(jet, cave, shape, (shape_pos_x, shape_pos_y)):
         if jet == ">":
-            shape_pos_x +=  1
+            shape_pos_x += 1
         else:
             shape_pos_x -= 1
     if shape_can_drop(cave, shape, (shape_pos_x, shape_pos_y)):

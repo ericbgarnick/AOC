@@ -1,5 +1,4 @@
 import pytest
-
 from y2022.python.day07.day07 import Node, NodeType, change_directory
 
 
@@ -49,9 +48,16 @@ def test_node_path():
     "dest_dir_name,cur_dir_path,expected_dir_path",
     [
         pytest.param("/", "/subdir/subsubdir/", "/", id="jump to root"),
-        pytest.param("subsubdir", "/subdir/", "/subdir/subsubdir/", id="descend into subdirectory"),
-        pytest.param("..", "/subdir/subsubdir/", "/subdir/", id="ascend to parent directory"),
-    ]
+        pytest.param(
+            "subsubdir",
+            "/subdir/",
+            "/subdir/subsubdir/",
+            id="descend into subdirectory",
+        ),
+        pytest.param(
+            "..", "/subdir/subsubdir/", "/subdir/", id="ascend to parent directory"
+        ),
+    ],
 )
 def test_change_directory(dest_dir_name, cur_dir_path, expected_dir_path):
     # GIVEN
@@ -59,9 +65,7 @@ def test_change_directory(dest_dir_name, cur_dir_path, expected_dir_path):
     subdir = Node("subdir", NodeType.directory, parent=root_dir)
     subsubdir = Node("subsubdir", NodeType.directory, parent=subdir)
 
-    dir_map = {
-        root_dir.path: root_dir, subdir.path: subdir, subsubdir.path: subsubdir
-    }
+    dir_map = {root_dir.path: root_dir, subdir.path: subdir, subsubdir.path: subsubdir}
 
     # WHEN
     new_dir = change_directory(dest_dir_name, dir_map[cur_dir_path], dir_map)

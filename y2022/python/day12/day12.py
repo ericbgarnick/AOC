@@ -64,7 +64,8 @@ def visit(
     topo_map: list[list[str]],
     distances: list[list[int]],
     to_visit: deque | None,
-    direction: str, goal: str,
+    direction: str,
+    goal: str,
 ):
     global GOAL_REACHED
     cur = to_visit.popleft()
@@ -80,29 +81,35 @@ def visit(
 
 
 def get_neighbors(
-    cur: Tuple[int, int], topo_map: list[list[str]], direction: str,
+    cur: Tuple[int, int],
+    topo_map: list[list[str]],
+    direction: str,
 ) -> list[Tuple[int, int]]:
     neighbors = []
     elevation = topo_map[cur[0]][cur[1]]
     if cur[0] > 0:
         up = topo_map[cur[0] - 1][cur[1]]
-        if ((direction == "ascending" and ord(up) - ord(elevation) <= 1) or
-                (direction == "descending" and ord(elevation) - ord(up) <= 1)):
+        if (direction == "ascending" and ord(up) - ord(elevation) <= 1) or (
+            direction == "descending" and ord(elevation) - ord(up) <= 1
+        ):
             neighbors.append((cur[0] - 1, cur[1]))
     if cur[0] < len(topo_map) - 1:
         down = topo_map[cur[0] + 1][cur[1]]
-        if ((direction == "ascending" and ord(down) - ord(elevation) <= 1) or
-                (direction == "descending" and ord(elevation) - ord(down) <= 1)):
+        if (direction == "ascending" and ord(down) - ord(elevation) <= 1) or (
+            direction == "descending" and ord(elevation) - ord(down) <= 1
+        ):
             neighbors.append((cur[0] + 1, cur[1]))
     if cur[1] > 0:
         left = topo_map[cur[0]][cur[1] - 1]
-        if ((direction == "ascending" and ord(left) - ord(elevation) <= 1) or
-                (direction == "descending" and ord(elevation) - ord(left) <= 1)):
+        if (direction == "ascending" and ord(left) - ord(elevation) <= 1) or (
+            direction == "descending" and ord(elevation) - ord(left) <= 1
+        ):
             neighbors.append((cur[0], cur[1] - 1))
     if cur[1] < len(topo_map[0]) - 1:
         right = topo_map[cur[0]][cur[1] + 1]
-        if ((direction == "ascending" and ord(right) - ord(elevation) <= 1) or
-                (direction == "descending" and ord(elevation) - ord(right) <= 1)):
+        if (direction == "ascending" and ord(right) - ord(elevation) <= 1) or (
+            direction == "descending" and ord(elevation) - ord(right) <= 1
+        ):
             neighbors.append((cur[0], cur[1] + 1))
     return neighbors
 

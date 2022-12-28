@@ -7,7 +7,6 @@ from collections import deque
 
 from y2022.python.shared import get_data_file_path
 
-
 TIME_LIMIT = 30  # minutes
 VALVE_LABEL_PATTERN = re.compile(r"[A-Z]{2}")
 START_VALVE_LABEL = "AA"

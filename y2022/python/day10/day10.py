@@ -4,7 +4,6 @@ Part 2 answer: ERCREPCJ
 """
 from y2022.python.shared import get_data_file_path
 
-
 SCREEN_WIDTH = 40
 SCREEN_HEIGHT = 6
 
@@ -63,7 +62,9 @@ def draw_image(instructions: list[str]):
 def main():
     with open(get_data_file_path(__file__.split("/")[-1]), "r") as f_in:
         instructions = f_in.readlines()
-        signal_strength = find_signal_strength(instructions, [220, 180, 140, 100, 60, 20])
+        signal_strength = find_signal_strength(
+            instructions, [220, 180, 140, 100, 60, 20]
+        )
         draw_image(instructions)
     print("PART 1:", signal_strength)
     print("PART 2:")

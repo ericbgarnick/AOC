@@ -34,10 +34,7 @@ def get_priority_per_rucksack(contents: str) -> int:
 
 def get_common_item_priority(item_lists: list[str]) -> int:
     common_item = list(
-        accumulate(
-            [set(contents) for contents in item_lists],
-            set.intersection
-        )
+        accumulate([set(contents) for contents in item_lists], set.intersection)
     )[-1].pop()
     priority = ord(common_item.lower()) - ALPHABET_START + 1
     if common_item.lower() != common_item:

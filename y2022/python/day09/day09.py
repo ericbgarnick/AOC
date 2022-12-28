@@ -7,6 +7,7 @@ from y2022.python.shared import get_data_file_path
 
 class Rope:
     ORIGIN = (0, 0)
+
     def __init__(self, length: int):
         self.knots = [Rope.ORIGIN for _ in range(length)]
         self.tail_history = {Rope.ORIGIN}

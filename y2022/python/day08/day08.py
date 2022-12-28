@@ -17,6 +17,7 @@ def main():
     print("PART 1:", count_visible_trees(forest))
     print("PART 2:", calculate_max_scenic_score(forest))
 
+
 ##############
 # - PART 1 - #
 ##############
@@ -63,9 +64,7 @@ def calculate_max_scenic_score(forest: list[list[int]]) -> int:
     scenic_scores = create_visibility_map(forest, middle_value=1, edge_value=0)
 
     for i in range(len(forest)):
-        calculate_scenic_scores(
-            forest, scenic_scores, i, 0, len(forest), 1, rev=False
-        )
+        calculate_scenic_scores(forest, scenic_scores, i, 0, len(forest), 1, rev=False)
         calculate_scenic_scores(
             forest, scenic_scores, i, len(forest) - 1, -1, -1, rev=True
         )
@@ -74,12 +73,12 @@ def calculate_max_scenic_score(forest: list[list[int]]) -> int:
 
 def calculate_scenic_scores(
     forest: list[list[int]],
-        scenic_scores: list[list[int]],
-        row_idx: int,
-        range_start: int,
-        range_stop: int,
-        range_step: int,
-        rev: bool,
+    scenic_scores: list[list[int]],
+    row_idx: int,
+    range_start: int,
+    range_stop: int,
+    range_step: int,
+    rev: bool,
 ):
     # track the last index in the forest row having a tree
     # at least as tall as index in tree_heights
@@ -139,7 +138,9 @@ def update_sight_distance(
 def create_visibility_map(
     forest: list[list[int]], middle_value: int, edge_value: int
 ) -> list[list[int]]:
-    visibility = [[middle_value for _ in range(len(forest))] for _ in range(len(forest))]
+    visibility = [
+        [middle_value for _ in range(len(forest))] for _ in range(len(forest))
+    ]
     # Update edges
     for i in range(len(visibility)):
         if i == 0 or i + 1 == len(visibility):
@@ -148,6 +149,7 @@ def create_visibility_map(
             visibility[i][0] = edge_value
             visibility[i][-1] = edge_value
     return visibility
+
 
 def print_map(forest_map: list[list[Any]]):
     print("\n".join([" ".join([str(tree) for tree in row]) for row in forest_map]))

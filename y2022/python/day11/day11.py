@@ -34,7 +34,7 @@ class Monkey:
     def __str__(self):
         return f"Monkey: {self.test_val}"
 
-    def misbehave(self, monkeys: list['Monkey'], custom_relief: bool):
+    def misbehave(self, monkeys: list["Monkey"], custom_relief: bool):
         while len(self.items):
             self._inspect_item(custom_relief)
             self._test_item(monkeys)
@@ -52,7 +52,7 @@ class Monkey:
         except IndexError:
             pass
 
-    def _test_item(self, monkeys: list['Monkey']):
+    def _test_item(self, monkeys: list["Monkey"]):
         try:
             item = self.items.popleft()
             if item % self.test_val == 0:

@@ -8,7 +8,6 @@ from typing import Tuple
 
 from y2022.python.shared import get_data_file_path
 
-
 """
 PART 1
 For each sensor
@@ -88,7 +87,6 @@ def main():
                 return
             else:
                 max_range_end = max(max_range_end, r[1])
-
 
 
 if __name__ == "__main__":
