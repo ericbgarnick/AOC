@@ -2,9 +2,9 @@
 .idea/
 
 # Pytest
-*/*/__pycache__/
+**/__pycache__
 
 venv/
 
 
-/*/day*/*.out
+**/*.out
