@@ -80,6 +80,17 @@ def min_avail_match_index(sorted_nodes: list[Node], query_node: Node) -> int:
             guess = (low + high) // 2
 
 
+def part_2():
+    """
+    * track target data coordinates
+    * Best case: straight path across, all empty (len row - 1)
+    * Worse cases:
+    * * only nodes with enough space to hold target data are in a convoluted path
+    * * many moves required to clear space for target data
+    """
+    pass
+
+
 def main():
     parser = ArgumentParser()
     parser.add_argument("--sample", action="store_true")
