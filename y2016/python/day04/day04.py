@@ -1,6 +1,6 @@
 """
 Part 1 answer: 278221
-Part 2 answer:
+Part 2 answer: 267
 """
 import re
 from collections import Counter, defaultdict
@@ -36,6 +36,22 @@ def is_valid_room(room: str) -> bool:
     return True
 
 
+def decrypt(encrypted: str, sector_id: int) -> str:
+    shift_dist = sector_id % 26
+    message = []
+    for word in encrypted.split("-"):
+        decrypted_word = "".join([shift(letter, shift_dist) for letter in word])
+        message.append(decrypted_word)
+    return " ".join(message)
+
+
+def shift(letter: str, distance: int) -> str:
+    offset = ord("a")
+    code = ord(letter) - offset
+    return chr((code + distance) % 26 + offset)
+
+
+
 def main():
     rooms = load_rooms()
     valid_room_count = sum(
@@ -43,6 +59,14 @@ def main():
         for room in rooms if is_valid_room(room)
     )
     print("PART 1:", valid_room_count)
+    for room in rooms:
+        room_name, checksum = re.split(r"\d+", room)
+        sector_id = int(re.search(r"\d+", room).group())
+        decrypted = decrypt(room_name, sector_id)
+        if "north" in decrypted:
+            print("PART 2:")
+            print("  ROOM NAME:", decrypted)
+            print("  SECTOR ID:", sector_id)
 
 
 if __name__ == "__main__":
